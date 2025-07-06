@@ -57,25 +57,147 @@ class CreateAccountScreen extends StatelessWidget {
           Align(
             alignment: Alignment.bottomCenter,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                IconButton.filled(
-                  onPressed: () {},
-                  style: IconButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                Padding(
+                  padding: const EdgeInsets.only(left: 12, bottom: 12),
+                  child: IconButton.filled(
+                    onPressed: () {},
+                    style: IconButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
+                    color: Color(0xFF383838),
+                    icon: Icon(Icons.chevron_left),
                   ),
-                  padding: EdgeInsets.zero,
-                  color: Color(0xFF383838),
-                  icon: Icon(Icons.chevron_left),
                 ),
                 Container(
                   width: double.maxFinite,
-                  height: 150,
-                  color: Colors.white,
-                  child: Text('Cadastre-se'),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
+                    ),
+                    color: Colors.white,
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Cadastra-se'),
+                      SizedBox(height: 10),
+                      Text('Preenchar os dados abaixo para criar sua conta.'),
+                      SizedBox(height: 24),
+                      Form(
+                        child: Column(
+                          spacing: 16,
+                          children: [
+                            TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'Nome',
+                                hintStyle: TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: Color(0xFF9EA2AE),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFE5E7EA),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFE5E7EA),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                fillColor: Color(0xFFF9FAFB),
+                                filled: true,
+                              ),
+                            ),
+                            TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'E-mail',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFE5E7EA),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFE5E7EA),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                fillColor: Color(0xFFF9FAFB),
+                                filled: true,
+                              ),
+                            ),
+                            TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'Senha',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFE5E7EA),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFE5E7EA),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                fillColor: Color(0xFFF9FAFB),
+                                filled: true,
+                              ),
+                            ),
+                            TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'Confirmar senha',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFE5E7EA),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFE5E7EA),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                fillColor: Color(0xFFF9FAFB),
+                                filled: true,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 62),
+                      SizedBox(
+                        width: double.maxFinite,
+                        child: FilledButton(
+                          onPressed: () {},
+                          child: Text('Criar conta'),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

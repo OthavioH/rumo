@@ -37,6 +37,7 @@ class AppTheme {
           padding: EdgeInsets.symmetric(vertical: 16),
         ),
       ),
+      
     );
   }
 }

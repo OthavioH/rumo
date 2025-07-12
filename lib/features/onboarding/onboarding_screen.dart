@@ -39,7 +39,12 @@ class OnboardingScreen extends StatelessWidget {
               SizedBox(
                 width: double.maxFinite,
                 child: OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      AuthRoutes.loginScreen,
+                    );
+                  },
                   child: Text(
                     'Entrar',
                     style: TextStyle(

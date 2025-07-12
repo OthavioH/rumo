@@ -44,6 +44,19 @@ class AppTheme {
           padding: EdgeInsets.symmetric(vertical: 16),
         ),
       ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: Colors.black,
+          textStyle: TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            height: 24 / 12,
+            decoration: TextDecoration.underline,
+            decorationColor: Colors.black,
+          ),
+        ),
+      ),
 
       /// InputDecorationTheme controla a aparência dos inputs de texto
       inputDecorationTheme: InputDecorationTheme(

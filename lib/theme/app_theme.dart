@@ -26,6 +26,13 @@ class AppTheme {
             borderRadius: BorderRadius.circular(12),
           ),
           padding: EdgeInsets.symmetric(vertical: 16),
+          textStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w600,
+            height: 1.33,
+          ),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
@@ -37,7 +44,26 @@ class AppTheme {
           padding: EdgeInsets.symmetric(vertical: 16),
         ),
       ),
-      
+
+      /// InputDecorationTheme controla a aparência dos inputs de texto
+      inputDecorationTheme: InputDecorationTheme(
+        hintStyle: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          color: Color(0xFF9EA2AE),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Color(0xFFE5E7EA), width: 1.5),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Color(0xFFE5E7EA), width: 1.5),
+        ),
+        fillColor: Color(0xFFF9FAFB),
+        filled: true,
+      ),
     );
   }
 }

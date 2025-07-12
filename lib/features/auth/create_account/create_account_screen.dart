@@ -2,8 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rumo/core/asset_images.dart';
 
-class CreateAccountScreen extends StatelessWidget {
+class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
+
+  @override
+  State<CreateAccountScreen> createState() => _CreateAccountScreenState();
+}
+
+class _CreateAccountScreenState extends State<CreateAccountScreen> {
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +70,9 @@ class CreateAccountScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(left: 12, bottom: 12),
                   child: IconButton.filled(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
                     style: IconButton.styleFrom(
                       backgroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
@@ -87,103 +96,103 @@ class CreateAccountScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Cadastra-se'),
+                      Text(
+                        'Cadastra-se',
+                        style: TextStyle(
+                          color: const Color(0xFF1E1E1E),
+                          fontSize: 24,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w600,
+                          height: 1.20,
+                          letterSpacing: -0.48,
+                        ),
+                      ),
                       SizedBox(height: 10),
-                      Text('Preenchar os dados abaixo para criar sua conta.'),
+                      Text(
+                        'Preenchar os dados abaixo para criar sua conta.',
+                        style: TextStyle(
+                          color: const Color(0xFF1E1E1E),
+                          fontSize: 14,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400,
+                          height: 1.40,
+                        ),
+                      ),
                       SizedBox(height: 24),
                       Form(
+                        key: _formKey,
+                        autovalidateMode: AutovalidateMode.onUnfocus,
                         child: Column(
                           spacing: 16,
                           children: [
                             TextFormField(
-                              decoration: InputDecoration(
-                                hintText: 'Nome',
-                                hintStyle: TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Color(0xFF9EA2AE),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(
-                                    color: Color(0xFFE5E7EA),
-                                    width: 1.5,
-                                  ),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(
-                                    color: Color(0xFFE5E7EA),
-                                    width: 1.5,
-                                  ),
-                                ),
-                                fillColor: Color(0xFFF9FAFB),
-                                filled: true,
-                              ),
+                              decoration: InputDecoration(hintText: 'Nome'),
+                              validator: (value){
+                                if (value == null || value.trim().isEmpty) {
+                                  return "Por favor, insira seu nome";
+                                }
+                              },
                             ),
                             TextFormField(
-                              decoration: InputDecoration(
-                                hintText: 'E-mail',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(
-                                    color: Color(0xFFE5E7EA),
-                                    width: 1.5,
-                                  ),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(
-                                    color: Color(0xFFE5E7EA),
-                                    width: 1.5,
-                                  ),
-                                ),
-                                fillColor: Color(0xFFF9FAFB),
-                                filled: true,
-                              ),
+                              decoration: InputDecoration(hintText: 'E-mail'),
+                              validator: (value) {
+                                final invalidEmailText =
+                                    'Insira um e-mail válido';
+            
+                                if (value == null || value.trim().isEmpty) {
+                                  return invalidEmailText;
+                                }
+            
+                                final email = value.trim();
+            
+                                if (!email.contains('@') ||
+                                    !email.contains('.')) {
+                                  return invalidEmailText;
+                                }
+            
+                                final parts = email.split('@');
+                                final firstPart = parts[0];
+            
+                                if (firstPart.trim().isEmpty) {
+                                  return invalidEmailText;
+                                }
+            
+                                final lastPart = parts[1];
+            
+                                if (lastPart.trim().isEmpty ||
+                                    !lastPart.contains('.')) {
+                                  return invalidEmailText;
+                                }
+            
+                                if (lastPart.startsWith('.') ||
+                                    lastPart.endsWith('.')) {
+                                  return invalidEmailText;
+                                }
+            
+                                return null;
+                              },
                             ),
                             TextFormField(
-                              decoration: InputDecoration(
-                                hintText: 'Senha',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(
-                                    color: Color(0xFFE5E7EA),
-                                    width: 1.5,
-                                  ),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(
-                                    color: Color(0xFFE5E7EA),
-                                    width: 1.5,
-                                  ),
-                                ),
-                                fillColor: Color(0xFFF9FAFB),
-                                filled: true,
-                              ),
+                              decoration: InputDecoration(hintText: 'Senha'),
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'Por favor, insira uma senha';
+                                }
+            
+                                return null;
+                              },
                             ),
                             TextFormField(
                               decoration: InputDecoration(
                                 hintText: 'Confirmar senha',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(
-                                    color: Color(0xFFE5E7EA),
-                                    width: 1.5,
-                                  ),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(
-                                    color: Color(0xFFE5E7EA),
-                                    width: 1.5,
-                                  ),
-                                ),
-                                fillColor: Color(0xFFF9FAFB),
-                                filled: true,
                               ),
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'Por favor, insira uma senha';
+                                }
+            
+                                return null;
+                              },
                             ),
                           ],
                         ),
@@ -192,8 +201,14 @@ class CreateAccountScreen extends StatelessWidget {
                       SizedBox(
                         width: double.maxFinite,
                         child: FilledButton(
-                          onPressed: () {},
-                          child: Text('Criar conta'),
+                          onPressed: () {
+                            final isValid = _formKey.currentState?.validate() ?? false;
+                            if(isValid){ 
+            
+                              // lógica para criar conta
+                            }
+                          },
+                          child: Text('Criar conta',),
                         ),
                       ),
                     ],

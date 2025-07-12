@@ -127,7 +127,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                           children: [
                             TextFormField(
                               decoration: InputDecoration(hintText: 'Nome'),
-                              validator: (value){
+                              validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
                                   return "Por favor, insira seu nome";
                                 }
@@ -138,38 +138,36 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                               validator: (value) {
                                 final invalidEmailText =
                                     'Insira um e-mail válido';
-            
+
                                 if (value == null || value.trim().isEmpty) {
                                   return invalidEmailText;
                                 }
-            
+
                                 final email = value.trim();
-            
+
                                 if (!email.contains('@') ||
                                     !email.contains('.')) {
                                   return invalidEmailText;
                                 }
-            
+
                                 final parts = email.split('@');
                                 final firstPart = parts[0];
-            
+
                                 if (firstPart.trim().isEmpty) {
                                   return invalidEmailText;
                                 }
-            
+
                                 final lastPart = parts[1];
-            
+
                                 if (lastPart.trim().isEmpty ||
                                     !lastPart.contains('.')) {
                                   return invalidEmailText;
                                 }
-            
+
                                 if (lastPart.startsWith('.') ||
                                     lastPart.endsWith('.')) {
                                   return invalidEmailText;
                                 }
-            
-                                return null;
                               },
                             ),
                             TextFormField(
@@ -178,8 +176,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                 if (value == null || value.trim().isEmpty) {
                                   return 'Por favor, insira uma senha';
                                 }
-            
-                                return null;
                               },
                             ),
                             TextFormField(
@@ -190,8 +186,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                 if (value == null || value.trim().isEmpty) {
                                   return 'Por favor, insira uma senha';
                                 }
-            
-                                return null;
                               },
                             ),
                           ],
@@ -202,13 +196,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         width: double.maxFinite,
                         child: FilledButton(
                           onPressed: () {
-                            final isValid = _formKey.currentState?.validate() ?? false;
-                            if(isValid){ 
-            
+                            final isValid =
+                                _formKey.currentState?.validate() ?? false;
+                            if (isValid) {
                               // lógica para criar conta
                             }
                           },
-                          child: Text('Criar conta',),
+                          child: Text('Criar conta'),
                         ),
                       ),
                     ],

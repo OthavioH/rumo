@@ -39,18 +39,29 @@ class AuthRepository {
     required String password,
   }) async {
     try {
-      await Future.delayed(Duration(seconds: 2));
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
     } on FirebaseAuthException catch (error) {
-      log(error.message ?? 'Error desconhecido');
+      log(
+        "Firebase Error (Code: ${error.code}) ${error.message ?? "Erro desconhecido"}",
+        error: error,
+      );
 
-      throw AuthException(code: error.code);
+      throw AuthException(code: error.code, originalMessage: error.message);
     }
+  }
+
+  Future<void> logout() async {
+    await FirebaseAuth.instance.signOut();
   }
 }
 
 class AuthException implements Exception {
   final String code;
-  AuthException({required this.code});
+  final String? originalMessage;
+  AuthException({required this.code, this.originalMessage});
 
   String getMessage() {
     switch (code) {
@@ -61,7 +72,7 @@ class AuthException implements Exception {
       case "weak-password":
         return "Sua senha é muito fraca. A senha deve conter no mínimo 6 caracteres";
       default:
-        return "Erro desconhecido";
+        return originalMessage ?? "Erro desconhecido";
     }
   }
 }

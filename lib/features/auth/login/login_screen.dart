@@ -141,6 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             spacing: 16,
                             children: [
                               TextFormField(
+                                controller: _emailController,
                                 decoration: const InputDecoration(
                                   hintText: 'E-mail',
                                 ),
@@ -182,6 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 },
                               ),
                               TextFormField(
+                                controller: _passwordController,
                                 decoration: InputDecoration(
                                   hintText: 'Senha',
                                   suffixIcon: IconButton(

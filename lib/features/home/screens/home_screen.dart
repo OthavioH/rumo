@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rumo/features/auth/repositories/auth_repository.dart';
 import 'package:rumo/features/onboarding/routes/onboarding_routes.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -9,6 +10,8 @@ class HomeScreen extends StatelessWidget {
     body: Center(
       child: ElevatedButton(
         onPressed: () {
+          final authRepository = AuthRepository();
+          authRepository.logout();
           Navigator.of(
             context,
           ).pushReplacementNamed(OnboardingRoutes.onboardingScreen);

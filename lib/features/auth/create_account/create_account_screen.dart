@@ -1,9 +1,7 @@
-import 'dart:developer';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rumo/core/asset_images.dart';
+import 'package:rumo/features/auth/repositories/auth_repository.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
@@ -262,27 +260,35 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                   isLoading = true;
                                 });
 
-                                await FirebaseAuth.instance
-                                    .createUserWithEmailAndPassword(
-                                      email: _emailController.text,
-                                      password: _passwordController.text,
-                                    );
-
-                                await FirebaseAuth.instance.currentUser
-                                    ?.updateDisplayName(_nameController.text);
+                                final authRepository = AuthRepository();
+                                await authRepository.createAccount(
+                                  email: _emailController.text,
+                                  password: _passwordController.text,
+                                  name: _nameController.text,
+                                );
 
                                 setState(() {
                                   isLoading = false;
                                 });
-                              } on FirebaseAuthException catch (error) {
-                                log(error.message ?? 'Error desconhecido');
-                                if(!context.mounted) return;
-                                showDialog(context: context, builder: (context) {
-                                  return AlertDialog(
-                                    title: Text('Erro'),
-                                    content: Text(error.message ?? 'Erro desconhecido'),
-                                  );
-                                });
+                              } on AuthException catch (error) {
+                                if (!context.mounted) return;
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text('Erro'),
+                                      content: Text(error.getMessage()),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text("OK"),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
                               }
                             }
                           },

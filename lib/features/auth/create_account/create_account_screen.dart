@@ -131,6 +131,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                 if (value == null || value.trim().isEmpty) {
                                   return "Por favor, insira seu nome";
                                 }
+                                return null;
                               },
                             ),
                             TextFormField(
@@ -168,6 +169,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                     lastPart.endsWith('.')) {
                                   return invalidEmailText;
                                 }
+                                return null;
                               },
                             ),
                             TextFormField(
@@ -176,6 +178,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                 if (value == null || value.trim().isEmpty) {
                                   return 'Por favor, insira uma senha';
                                 }
+                                return null;
                               },
                             ),
                             TextFormField(
@@ -186,6 +189,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                 if (value == null || value.trim().isEmpty) {
                                   return 'Por favor, insira uma senha';
                                 }
+                                return null;
                               },
                             ),
                           ],

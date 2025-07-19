@@ -170,6 +170,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       lastPart.endsWith('.')) {
                                     return invalidEmailText;
                                   }
+
+                                  return null;
                                 },
                               ),
                               TextFormField(
@@ -181,6 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   if (value == null || value.trim().isEmpty) {
                                     return 'Por favor, insira uma senha';
                                   }
+                                  return null;
                                 },
                               ),
                             ],

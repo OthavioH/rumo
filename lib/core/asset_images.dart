@@ -5,4 +5,5 @@ class AssetImages {
       '$_assetsPath/onboarding_character.png';
   static const String createAccountCharacter = '$_assetsPath/create_account_character.png';
   static const String loginCharacter = '$_assetsPath/login_character.png';
+  static const String iconMap = '$_assetsPath/icon_map.svg';
 }

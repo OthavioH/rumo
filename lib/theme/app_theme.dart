@@ -74,7 +74,16 @@ class AppTheme {
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: Color(0xFFE5E7EA), width: 1.5),
         ),
-        fillColor: Color(0xFFF9FAFB),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Color(0xFFEE443F), width: 1.5),
+        ),
+        fillColor: WidgetStateColor.resolveWith((states) {
+          if (states.contains(WidgetState.error)) {
+            return Color(0xFFFDECEC);
+          }
+          return Color(0xFFF9FAFB);
+        }),
         filled: true,
       ),
     );

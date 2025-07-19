@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rumo/core/asset_images.dart';
@@ -11,6 +14,14 @@ class CreateAccountScreen extends StatefulWidget {
 
 class _CreateAccountScreenState extends State<CreateAccountScreen> {
   final _formKey = GlobalKey<FormState>();
+
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  bool hidePassword = true;
+  bool hideConfirmPassword = true;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -121,11 +132,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       SizedBox(height: 24),
                       Form(
                         key: _formKey,
-                        autovalidateMode: AutovalidateMode.onUnfocus,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         child: Column(
                           spacing: 16,
                           children: [
                             TextFormField(
+                              controller: _nameController,
                               decoration: InputDecoration(hintText: 'Nome'),
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
@@ -135,6 +147,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                               },
                             ),
                             TextFormField(
+                              controller: _emailController,
                               decoration: InputDecoration(hintText: 'E-mail'),
                               validator: (value) {
                                 final invalidEmailText =
@@ -173,10 +186,30 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                               },
                             ),
                             TextFormField(
-                              decoration: InputDecoration(hintText: 'Senha'),
+                              controller: _passwordController,
+                              decoration: InputDecoration(
+                                hintText: 'Senha',
+                                suffixIcon: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      hidePassword = !hidePassword;
+                                    });
+                                  },
+                                  icon: Icon(
+                                    hidePassword
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                  ),
+                                ),
+                              ),
+                              obscureText: hidePassword,
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
                                   return 'Por favor, insira uma senha';
+                                }
+
+                                if (value.length < 6) {
+                                  return 'A senha deve ter pelo menos 6 caracteres';
                                 }
                                 return null;
                               },
@@ -184,10 +217,31 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                             TextFormField(
                               decoration: InputDecoration(
                                 hintText: 'Confirmar senha',
+                                suffixIcon: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      hideConfirmPassword =
+                                          !hideConfirmPassword;
+                                    });
+                                  },
+                                  icon: Icon(
+                                    hideConfirmPassword
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                  ),
+                                ),
                               ),
+                              obscureText: hideConfirmPassword,
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
                                   return 'Por favor, insira uma senha';
+                                }
+                                if (value != _passwordController.text) {
+                                  return 'As senhas não coincidem';
+                                }
+
+                                if (value.length < 6) {
+                                  return 'A senha deve ter pelo menos 6 caracteres';
                                 }
                                 return null;
                               },
@@ -199,14 +253,53 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       SizedBox(
                         width: double.maxFinite,
                         child: FilledButton(
-                          onPressed: () {
+                          onPressed: () async {
                             final isValid =
                                 _formKey.currentState?.validate() ?? false;
                             if (isValid) {
-                              // lógica para criar conta
+                              try {
+                                setState(() {
+                                  isLoading = true;
+                                });
+
+                                await FirebaseAuth.instance
+                                    .createUserWithEmailAndPassword(
+                                      email: _emailController.text,
+                                      password: _passwordController.text,
+                                    );
+
+                                await FirebaseAuth.instance.currentUser
+                                    ?.updateDisplayName(_nameController.text);
+
+                                setState(() {
+                                  isLoading = false;
+                                });
+                              } on FirebaseAuthException catch (error) {
+                                log(error.message ?? 'Error desconhecido');
+                                if(!context.mounted) return;
+                                showDialog(context: context, builder: (context) {
+                                  return AlertDialog(
+                                    title: Text('Erro'),
+                                    content: Text(error.message ?? 'Erro desconhecido'),
+                                  );
+                                });
+                              }
                             }
                           },
-                          child: Text('Criar conta'),
+                          child: Builder(
+                            builder: (context) {
+                              if (isLoading) {
+                                return SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                  ),
+                                );
+                              }
+                              return Text('Criar conta');
+                            },
+                          ),
                         ),
                       ),
                     ],

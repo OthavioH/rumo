@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "828631601003",
+    "project_id": "rumo-4421e",
+    "storage_bucket": "rumo-4421e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:828631601003:android:9e3de42311a2187d4a062e",
+        "android_client_info": {
+          "package_name": "br.com.othavioh.rumo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaziR6c1ipKvhNQRxWwoAkZITyqhPibEQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

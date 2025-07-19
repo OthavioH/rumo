@@ -56,6 +56,21 @@ class AuthRepository {
   Future<void> logout() async {
     await FirebaseAuth.instance.signOut();
   }
+
+  Future<void> sendPasswordResetEmail({
+    required String email,
+  }) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (error) {
+      log(
+        "Firebase Error (Code: ${error.code}) ${error.message ?? "Erro desconhecido"}",
+        error: error,
+      );
+
+      throw AuthException(code: error.code, originalMessage: error.message);
+    }
+  }
 }
 
 class AuthException implements Exception {

@@ -14,6 +14,7 @@ class _ForgotPasswordDialogState extends State<ForgotPasswordDialog> {
   final TextEditingController _emailController = TextEditingController();
 
   bool isLoading = false;
+  String? errorMessage;
 
   @override
   Widget build(BuildContext context) => AlertDialog(
@@ -58,31 +59,65 @@ class _ForgotPasswordDialogState extends State<ForgotPasswordDialog> {
           },
         ),
         const SizedBox(height: 16),
-        Visibility(visible: isLoading, child: CircularProgressIndicator()),
+        ForgotPasswordStatus(isLoading: isLoading, errorMessage: errorMessage),
       ],
     ),
     actions: [
       TextButton(
-        onPressed: () async {
-          setState(() {
-            isLoading = true;
-          });
+        onPressed: isLoading
+            ? null
+            : () async {
+                setState(() {
+                  isLoading = true;
+                });
 
-          try {
-            final authRepository = AuthRepository();
-            await authRepository.sendPasswordResetEmail(
-              email: _emailController.text,
-            );
-          } catch (error) {
-            log("Error resetting password", error: error);
-          } finally {
-            setState(() {
-              isLoading = false;
-            });
-          }
-        },
+                try {
+                  final authRepository = AuthRepository();
+                  await authRepository.sendPasswordResetEmail(
+                    email: _emailController.text,
+                  );
+                  if(context.mounted) {
+                    Navigator.of(context).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('E-mail de redefinição de senha enviado com sucesso!')),
+                    );
+                  }
+                } on AuthException catch (error) {
+                  log("Error resetting password", error: error);
+                  setState(() {
+                    errorMessage = error.getMessage();
+                  });
+                } finally {
+                  setState(() {
+                    isLoading = false;
+                  });
+                }
+              },
         child: Text('Enviar e-mail'),
       ),
     ],
   );
+}
+
+class ForgotPasswordStatus extends StatelessWidget {
+  final bool isLoading;
+  final String? errorMessage;
+  const ForgotPasswordStatus({
+    super.key,
+    required this.isLoading,
+    required this.errorMessage,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      return CircularProgressIndicator(color: Theme.of(context).colorScheme.inverseSurface);
+    }
+
+    if (errorMessage != null) {
+      return Text(errorMessage!, style: TextStyle(color: Colors.red));
+    }
+
+    return SizedBox.shrink();
+  }
 }

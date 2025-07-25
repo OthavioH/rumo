@@ -86,6 +86,11 @@ class AuthException implements Exception {
         return "Email não é válido";
       case "weak-password":
         return "Sua senha é muito fraca. A senha deve conter no mínimo 6 caracteres";
+      case "user-not-found":
+        return "Usuário não encontrado";
+      case "INVALID_LOGIN_CREDENTIALS":
+      case "invalid-credential":
+        return "Seu usuário ou senha estão incorretos";
       default:
         return originalMessage ?? "Erro desconhecido";
     }

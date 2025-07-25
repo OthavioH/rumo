@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  ThemeData get theme {
-    return ThemeData(
-      colorScheme: ColorScheme.fromSeed(
+  ColorScheme get colorScheme => ColorScheme.fromSeed(
         seedColor: Color(0xFF4E61F6),
         brightness: Brightness.light,
         primary: Color(0xFF4E61F6),
         surface: Colors.white,
-      ),
+      );
+
+  ThemeData get theme {
+    return ThemeData(
+      colorScheme: colorScheme,
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: Color(0xFFFFFFFF),
         shape: RoundedRectangleBorder(
@@ -85,6 +87,10 @@ class AppTheme {
           return Color(0xFFF9FAFB);
         }),
         filled: true,
+      ),
+
+      dialogTheme: DialogThemeData(
+        backgroundColor: colorScheme.surface,
       ),
     );
   }

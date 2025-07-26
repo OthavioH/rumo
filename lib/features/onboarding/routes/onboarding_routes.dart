@@ -9,9 +9,10 @@ class OnboardingRoutes {
 
   static final Map<String, Widget Function(BuildContext)> routes = {
     onboardingScreen: (context) {
-      final isUserLoggedIn = FirebaseAuth.instance.currentUser != null;
-      if (isUserLoggedIn) {
-        return const HomeScreen(); 
+      final isLogged = FirebaseAuth.instance.currentUser != null;
+
+      if (isLogged) {
+        return const HomeScreen();
       }
 
       return const OnboardingScreen();

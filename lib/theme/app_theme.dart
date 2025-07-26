@@ -19,8 +19,8 @@ class AppTheme {
             topLeft: Radius.circular(32),
             topRight: Radius.circular(32),
           ),
-          side: BorderSide(color: Color(0xFFD9D9D9), width: 1),
         ),
+        clipBehavior: Clip.antiAlias,
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(

@@ -12,6 +12,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int currentIndex = 0;
 
+  void onSelectItem(int index) {
+    setState(() {
+      currentIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
     resizeToAvoidBottomInset: false,
@@ -20,15 +26,40 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          BottomNavItem(icon: AssetImages.iconMap, label: 'Mapa'),
-          BottomNavItem(icon: AssetImages.iconMap, label: 'Diários'),
+          BottomNavItem(
+            icon: AssetImages.iconMap,
+            label: 'Mapa',
+            currentSelectedIndex: currentIndex,
+            index: 0,
+            onSelectItem: onSelectItem,
+          ),
+          BottomNavItem(
+            icon: AssetImages.iconDiaries,
+            label: 'Diários',
+            currentSelectedIndex: currentIndex,
+            index: 1,
+            onSelectItem: onSelectItem,
+          ),
           IconButton.filled(
             style: IconButton.styleFrom(backgroundColor: Color(0xFFDDE1FF)),
             onPressed: () {},
-            icon: Icon(Icons.add, color: Color(0xFF4E61F6), size: 20),
+            iconSize: 28,
+            icon: Icon(Icons.add, color: Theme.of(context).primaryColor),
           ),
-          BottomNavItem(icon: AssetImages.iconMap, label: 'Explorar'),
-          BottomNavItem(icon: AssetImages.iconMap, label: 'Perfil'),
+          BottomNavItem(
+            icon: AssetImages.iconExplore,
+            label: 'Explorar',
+            currentSelectedIndex: currentIndex,
+            index: 2,
+            onSelectItem: onSelectItem,
+          ),
+          BottomNavItem(
+            icon: AssetImages.iconProfile,
+            label: 'Perfil',
+            currentSelectedIndex: currentIndex,
+            index: 3,
+            onSelectItem: onSelectItem,
+          ),
         ],
       ),
     ),
@@ -36,6 +67,8 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context) {
         return switch (currentIndex) {
           1 => Center(child: Text('Diários')),
+          2 => Center(child: Text('Explorar')),
+          3 => Center(child: Text('Perfil')),
           _ => Scaffold(
             appBar: AppBar(title: Text('AppBar Mapa')),
             body: Center(child: Text('Mapa')),
@@ -45,5 +78,3 @@ class _HomeScreenState extends State<HomeScreen> {
     ),
   );
 }
-
-

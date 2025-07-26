@@ -9,4 +9,12 @@ class AssetImages {
   static const String iconDiaries = '$_assetsPath/icon_diaries.svg';
   static const String iconExplore = '$_assetsPath/icon_explore.svg';
   static const String iconProfile = '$_assetsPath/icon_profile.svg';
+  static const String iconCamera = '$_assetsPath/icon_camera.svg';
+  static const String iconLocationPin = '$_assetsPath/icon_location_pin.svg';
+  static const String iconStar = '$_assetsPath/icon_star.svg';
+  static const String iconHalfStar = '$_assetsPath/icon_half_star.svg';
+  static const String iconThreeLines = '$_assetsPath/icon_three_lines.svg';
+  static const String iconTag = '$_assetsPath/icon_tag.svg';
+  static const String iconPhoto = '$_assetsPath/icon_photo.svg';
+
 }

@@ -3,6 +3,7 @@ import 'package:rumo/core/asset_images.dart';
 import 'package:rumo/features/diary/screens/user_diaries_screen.dart';
 import 'package:rumo/features/home/widgets/bottom_nav_item.dart';
 import 'package:rumo/features/user/screens/profile_screen.dart';
+import 'package:rumo/features/user/widgets/create_diary_bottom_sheet.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -49,10 +50,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 onSelectItem: onSelectItem,
               ),
               IconButton.filled(
-                style: IconButton.styleFrom(
-                  backgroundColor: Color(0xFFDDE1FF),
-                ),
-                onPressed: () {},
+                style: IconButton.styleFrom(backgroundColor: Color(0xFFDDE1FF)),
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    constraints: BoxConstraints(
+                      maxHeight: MediaQuery.of(context).size.height * 0.9,
+                    ),
+                    builder: (context) => CreateDiaryBottomSheet(),
+                  );
+                },
                 iconSize: 28,
                 icon: Icon(Icons.add, color: Theme.of(context).primaryColor),
               ),

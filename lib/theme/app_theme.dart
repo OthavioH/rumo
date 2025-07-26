@@ -10,6 +10,7 @@ class AppTheme {
 
   ThemeData get theme {
     return ThemeData(
+      fontFamily: 'Inter',
       colorScheme: colorScheme,
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: Color(0xFFFFFFFF),

@@ -26,6 +26,7 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
   LatLng? userCoordinates;
   List<Placemark> placemarks = [];
   File? selectedImage;
+  List<File> tripImages = [];
 
   @override
   void initState() {
@@ -68,6 +69,7 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
       ),
       child: icon,
     ),
+    alignLabelWithHint: true,
     prefixIconConstraints: BoxConstraints(maxWidth: 48),
     hintText: hintText,
   );
@@ -227,8 +229,15 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                     ),
                   ),
                   InkWell(
-                    onTap: () {
-                      ImagePicker().pickMultiImage();
+                    onTap: () async {
+                      final pickedFiles = await ImagePicker().pickMultiImage();
+                      if (pickedFiles.isEmpty) return;
+
+                      setState(() {
+                        tripImages = pickedFiles
+                            .map((file) => File(file.path))
+                            .toList();
+                      });
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -239,10 +248,12 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                           width: 1.5,
                         ),
                       ),
-                      padding: EdgeInsets.all(12),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 17.5,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 12,
                         children: [
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -264,54 +275,66 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                               ),
                             ],
                           ),
-                          Wrap(
-                            direction: Axis.horizontal,
-                            runSpacing: 6,
-                            spacing: 6,
-                            children: [
-                              if (selectedImage != null)
-                                for (var i = 0; i < 10; i++)
-                                  SizedBox(
-                                    height: 56,
-                                    width: 56,
-                                    child: Stack(
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.bottomLeft,
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(
-                                              4,
-                                            ),
-                                            child: Image.file(
-                                              selectedImage!,
-                                              width: 48,
-                                              height: 48,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                        ),
-                                        Align(
-                                          alignment: Alignment.topRight,
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: Color(0xFFEE443F),
-                                              border: Border.all(
-                                                color: Colors.white,
-                                                width: 1.17,
+                          Builder(
+                            builder: (context) {
+                              if (tripImages.isEmpty) return SizedBox.shrink();
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 12),
+                                child: Wrap(
+                                  direction: Axis.horizontal,
+                                  runSpacing: 6,
+                                  spacing: 6,
+                                  children: tripImages.map<Widget>((image) {
+                                    return InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          tripImages.remove(image);
+                                        });
+                                      },
+                                      child: SizedBox(
+                                        height: 56,
+                                        width: 56,
+                                        child: Stack(
+                                          children: [
+                                            Align(
+                                              alignment: Alignment.bottomLeft,
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(4),
+                                                child: Image.file(
+                                                  image,
+                                                  width: 48,
+                                                  height: 48,
+                                                  fit: BoxFit.cover,
+                                                ),
                                               ),
-                                              shape: BoxShape.circle,
                                             ),
-                                            child: Icon(
-                                              Icons.close,
-                                              size: 14,
-                                              color: Colors.white,
+                                            Align(
+                                              alignment: Alignment.topRight,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xFFEE443F),
+                                                  border: Border.all(
+                                                    color: Colors.white,
+                                                    width: 1.17,
+                                                  ),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Icon(
+                                                  Icons.close,
+                                                  size: 14,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
                                             ),
-                                          ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                            ],
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),

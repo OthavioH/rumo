@@ -1,10 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:location/location.dart';
+import 'package:rumo/services/location_service.dart';
 
 class UserDiariesScreen extends StatefulWidget {
   const UserDiariesScreen({super.key});
@@ -14,8 +12,8 @@ class UserDiariesScreen extends StatefulWidget {
 }
 
 class _UserDiariesScreenState extends State<UserDiariesScreen> {
-  final location = Location();
   final MapController mapController = MapController();
+  final locationService = LocationService();
 
   bool isMapReady = false;
 
@@ -33,41 +31,19 @@ class _UserDiariesScreenState extends State<UserDiariesScreen> {
   }
 
   void getUserLocation() async {
-    try {
-      bool serviceEnabled = await location.serviceEnabled();
-      if (!serviceEnabled) {
-        serviceEnabled = await location.requestService();
-        if (!serviceEnabled) {
-          return;
-        }
-      }
+    final userPosition = await locationService.askAndGetUserLocation();
+    if (userPosition == null) {
+      return;
+    }
 
-      PermissionStatus permissionGranted = await location.hasPermission();
-      if (permissionGranted == PermissionStatus.denied) {
-        permissionGranted = await location.requestPermission();
-        if (permissionGranted != PermissionStatus.granted) {
-          return;
-        }
-      }
-
-      await location.changeSettings(accuracy: LocationAccuracy.balanced);
-
-      final userPosition = await location.getLocation();
-      if (userPosition.latitude == null || userPosition.longitude == null) {
-        return;
-      }
-
-      setState(() {
-        userCooordinates = LatLng(
-          userPosition.latitude!,
-          userPosition.longitude!,
-        );
-      });
-      if (isMapReady) {
-        mapController.move(userCooordinates!, 16);
-      }
-    } catch (e) {
-      log("Error getting user location", error: e);
+    setState(() {
+      userCooordinates = LatLng(
+        userPosition.latitude!,
+        userPosition.longitude!,
+      );
+    });
+    if (isMapReady) {
+      mapController.move(userCooordinates!, 16);
     }
   }
 

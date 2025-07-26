@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   ColorScheme get colorScheme => ColorScheme.fromSeed(
-        seedColor: Color(0xFF4E61F6),
-        brightness: Brightness.light,
-        primary: Color(0xFF4E61F6),
-        surface: Colors.white,
-      );
+    seedColor: Color(0xFF4E61F6),
+    brightness: Brightness.light,
+    primary: Color(0xFF4E61F6),
+    surface: Colors.white,
+  );
 
   ThemeData get theme {
     return ThemeData(
@@ -97,8 +97,19 @@ class AppTheme {
         filled: true,
       ),
 
-      dialogTheme: DialogThemeData(
-        backgroundColor: colorScheme.surface,
+      dialogTheme: DialogThemeData(backgroundColor: colorScheme.surface),
+
+      switchTheme: SwitchThemeData(
+        trackColor: WidgetStateProperty.resolveWith((states){
+          if(states.contains(WidgetState.selected)) {
+            return Color(0xFF4E61F6);
+          }
+          return Color(0xFFE5E7EA);
+        }),
+        thumbColor: WidgetStatePropertyAll(Colors.white),
+        thumbIcon: WidgetStatePropertyAll(const Icon(null)),
+        trackOutlineColor: WidgetStatePropertyAll(Colors.transparent),
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
     );
   }

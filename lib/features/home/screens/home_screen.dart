@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rumo/core/asset_images.dart';
+import 'package:rumo/features/diary/screens/user_diaries_screen.dart';
 import 'package:rumo/features/home/widgets/bottom_nav_item.dart';
 import 'package:rumo/features/user/screens/profile_screen.dart';
 
@@ -76,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Builder(
         builder: (context) {
           return switch (currentIndex) {
-            1 => Center(child: Text('Diários')),
+            1 => UserDiariesScreen(),
             2 => Center(child: Text('Explorar')),
             3 => ProfileScreen(),
             _ => Scaffold(

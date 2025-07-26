@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:rumo/core/asset_images.dart';
 import 'package:rumo/features/home/widgets/bottom_nav_item.dart';
+import 'package:rumo/features/user/screens/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -78,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
           return switch (currentIndex) {
             1 => Center(child: Text('Diários')),
             2 => Center(child: Text('Explorar')),
-            3 => Center(child: Text('Perfil')),
+            3 => ProfileScreen(),
             _ => Scaffold(
               appBar: AppBar(title: Text('AppBar Mapa')),
               body: Center(child: Text('Mapa')),

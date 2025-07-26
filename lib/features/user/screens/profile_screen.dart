@@ -1,6 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:rumo/features/onboarding/routes/onboarding_routes.dart';
+import 'package:rumo/features/user/widgets/sign_out_bottom_sheet.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -16,27 +15,12 @@ class ProfileScreen extends StatelessWidget {
               showModalBottomSheet(
                 context: context,
                 builder: (context) {
-                  return SizedBox(
-                    width: double.maxFinite,
-                    child: TextButton(
-                      onPressed: () async {
-                        await FirebaseAuth.instance.signOut();
-                        if (context.mounted) {
-                          Navigator.of(context).popUntil((_) => false);
-                          Navigator.pushNamed(
-                            context,
-                            OnboardingRoutes.onboardingScreen,
-                          );
-                        }
-                      },
-                      child: Text("Sair da minha conta"),
-                    ),
-                  );
+                  return SignOutBottomSheet();
                 },
               );
             },
-            child: Text('Sair'),
             style: OutlinedButton.styleFrom(minimumSize: Size.fromHeight(48)),
+            child: Text('Sair'),
           ),
         ),
       ),

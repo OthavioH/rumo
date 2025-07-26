@@ -15,14 +15,15 @@ class AppTheme {
         backgroundColor: Color(0xFFFFFFFF),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(16),
-            topRight: Radius.circular(16),
+            topLeft: Radius.circular(32),
+            topRight: Radius.circular(32),
           ),
           side: BorderSide(color: Color(0xFFD9D9D9), width: 1),
         ),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
+          minimumSize: Size.fromHeight(48),
           backgroundColor: Color(0xFF4E61F6),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -44,6 +45,12 @@ class AppTheme {
           ),
           side: BorderSide(color: Color(0xFF4E61F6), width: 1.5),
           padding: EdgeInsets.symmetric(vertical: 16),
+          foregroundColor: Color(0xFF4E61F6),
+          textStyle: TextStyle(
+            fontSize: 16,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
       textButtonTheme: TextButtonThemeData(

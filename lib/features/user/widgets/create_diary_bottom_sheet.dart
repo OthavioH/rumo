@@ -1,10 +1,13 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:rumo/core/asset_images.dart';
+import 'package:rumo/features/diary/models/create_diary_model.dart';
+import 'package:rumo/features/diary/repositories/diary_repository.dart';
 import 'package:rumo/services/location_service.dart';
 import 'package:geocoding/geocoding.dart';
 
@@ -19,7 +22,7 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
   final locationService = LocationService();
 
   bool isPrivate = false;
-  final SearchController searchController = SearchController();
+  final SearchController locationSearchController = SearchController();
   final TextEditingController _tripNameController = TextEditingController();
   final TextEditingController _resumeController = TextEditingController();
 
@@ -185,7 +188,7 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                 spacing: 16,
                 children: [
                   SearchAnchor.bar(
-                    searchController: searchController,
+                    searchController: locationSearchController,
                     suggestionsBuilder: (context, controller) {
                       return List.generate(placemarks.length, (index) {
                         final placemark = placemarks.elementAt(index);
@@ -415,7 +418,25 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
           ],
         ),
         const SizedBox(height: 32),
-        FilledButton(onPressed: () {}, child: Text('Salvar Diário')),
+        FilledButton(
+          onPressed: () {
+            final ownerId = FirebaseAuth.instance.currentUser?.uid;
+            if(ownerId == null) return;
+            DiaryRepository().createDiary(
+              diary: CreateDiaryModel(
+                ownerId: ownerId,
+                location: locationSearchController.text,
+                name: _tripNameController.text,
+                coverImage: selectedImage?.path ?? '',
+                resume: _resumeController.text,
+                images: tripImages.map((image) => image.path).toList(),
+                rating: 2.5,
+                isPrivate: isPrivate
+              ),
+            );
+          },
+          child: Text('Salvar Diário'),
+        ),
       ],
     ),
   );

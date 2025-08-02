@@ -269,11 +269,16 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                       minLines: 4,
                       maxLines: 4,
                       decoration: iconTextFieldDecoration(
-                        icon: SvgPicture.asset(
-                          AssetImages.iconThreeLines,
-                          width: 16,
-                          height: 16,
-                          fit: BoxFit.cover,
+                        icon: Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 70,
+                          ),
+                          child: SvgPicture.asset(
+                            AssetImages.iconThreeLines,
+                            width: 16,
+                            height: 16,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                         hintText: 'Resumo da sua viagem',
                       ),

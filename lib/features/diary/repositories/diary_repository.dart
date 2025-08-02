@@ -9,8 +9,9 @@ class DiaryRepository {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
       final docRef = await firestore.collection("diaries").add(diary.toMap());
       log("Diary created with ID: ${docRef.id}");
-    } catch (e) {
-      log("Error creating diary", error: e);
+    }  catch (e, stackTrace) {
+      log("Error creating diary", error: e, stackTrace: stackTrace);
+      rethrow;
     }
   }
 }

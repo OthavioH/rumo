@@ -12,6 +12,33 @@ class AppTheme {
     return ThemeData(
       fontFamily: 'Inter',
       colorScheme: colorScheme,
+      searchBarTheme: SearchBarThemeData(
+        backgroundColor: WidgetStatePropertyAll(Color(0xFFF9FAFB)),
+        side: WidgetStatePropertyAll(
+          BorderSide(color: Color(0xFFE5E7EA), width: 1.5),
+        ),
+        textStyle: WidgetStatePropertyAll(
+          TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 14,
+            fontWeight: FontWeight.normal,
+            color: Color(0xFF1E1E1E),
+          ),
+        ),
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+        elevation: WidgetStatePropertyAll(0),
+        padding: WidgetStatePropertyAll(EdgeInsets.zero),
+        hintStyle: WidgetStatePropertyAll(
+          TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: Color(0xFF9EA2AE),
+          ),
+        ),
+      ),
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: Color(0xFFFFFFFF),
         shape: RoundedRectangleBorder(
@@ -100,8 +127,8 @@ class AppTheme {
       dialogTheme: DialogThemeData(backgroundColor: colorScheme.surface),
 
       switchTheme: SwitchThemeData(
-        trackColor: WidgetStateProperty.resolveWith((states){
-          if(states.contains(WidgetState.selected)) {
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return Color(0xFF4E61F6);
           }
           return Color(0xFFE5E7EA);

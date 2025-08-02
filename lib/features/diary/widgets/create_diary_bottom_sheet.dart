@@ -9,6 +9,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:rumo/core/asset_images.dart';
 import 'package:rumo/features/diary/models/create_diary_model.dart';
 import 'package:rumo/features/diary/repositories/diary_repository.dart';
+import 'package:rumo/features/diary/widgets/star_rating.dart';
 import 'package:rumo/services/location_service.dart';
 import 'package:geocoding/geocoding.dart';
 
@@ -35,6 +36,8 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
 
   bool isLoading = false;
 
+  double rating = 0;
+
   @override
   void initState() {
     super.initState();
@@ -52,19 +55,23 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
       ),
     );
   }
+
   void showError(String message) {
-    showDialog(context: context, builder: (context) {
-      return AlertDialog(
-        title: Text('Erro'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('OK'),
-          ),
-        ],
-      );
-    });
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Erro'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void getUserLocation() async {
@@ -108,7 +115,9 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
   Widget build(BuildContext context) => Form(
     key: _formKey,
     child: Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: ListView(
         children: [
           Padding(
@@ -146,12 +155,12 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
               InkWell(
                 onTap: () async {
                   final imagePicker = ImagePicker();
-    
+
                   final file = await imagePicker.pickImage(
                     source: ImageSource.gallery,
                   );
                   if (file == null) return;
-    
+
                   setState(() {
                     selectedImage = File(file.path);
                   });
@@ -220,16 +229,20 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                   children: [
                     SearchAnchor.bar(
                       searchController: locationSearchController,
-                      barPadding: WidgetStatePropertyAll(
-                        EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                      ),
                       barLeading: SvgPicture.asset(
                         AssetImages.iconLocationPin,
                         width: 24,
                         height: 24,
-                        fit: BoxFit.cover,
+                      ),
+                      viewLeading: SvgPicture.asset(
+                        AssetImages.iconLocationPin,
+                        width: 24,
+                        height: 24,
                       ),
                       barHintText: 'Localização',
+                      barPadding: WidgetStatePropertyAll(
+                        EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      ),
                       suggestionsBuilder: (context, controller) {
                         return List.generate(placemarks.length, (index) {
                           final placemark = placemarks.elementAt(index);
@@ -270,9 +283,7 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                       maxLines: 4,
                       decoration: iconTextFieldDecoration(
                         icon: Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: 70,
-                          ),
+                          padding: const EdgeInsets.only(bottom: 70),
                           child: SvgPicture.asset(
                             AssetImages.iconThreeLines,
                             width: 16,
@@ -291,9 +302,10 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                     ),
                     InkWell(
                       onTap: () async {
-                        final pickedFiles = await ImagePicker().pickMultiImage();
+                        final pickedFiles = await ImagePicker()
+                            .pickMultiImage();
                         if (pickedFiles.isEmpty) return;
-    
+
                         setState(() {
                           tripImages = pickedFiles
                               .map((file) => File(file.path))
@@ -338,7 +350,8 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                             ),
                             Builder(
                               builder: (context) {
-                                if (tripImages.isEmpty) return SizedBox.shrink();
+                                if (tripImages.isEmpty)
+                                  return SizedBox.shrink();
                                 return Padding(
                                   padding: const EdgeInsets.only(top: 12),
                                   child: Wrap(
@@ -411,43 +424,12 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                         children: [
                           Text('Nota para a viagem'),
                           const SizedBox(height: 16),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                AssetImages.iconStar,
-                                width: 24,
-                                height: 24,
-                                colorFilter: ColorFilter.mode(
-                                  Color(0xFFFFCB45),
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                              SvgPicture.asset(
-                                AssetImages.iconStar,
-                                width: 24,
-                                height: 24,
-                                colorFilter: ColorFilter.mode(
-                                  Color(0xFFFFCB45),
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                              SvgPicture.asset(
-                                AssetImages.iconHalfStar,
-                                width: 24,
-                                height: 24,
-                              ),
-                              SvgPicture.asset(
-                                AssetImages.iconStar,
-                                width: 24,
-                                height: 24,
-                              ),
-                              SvgPicture.asset(
-                                AssetImages.iconStar,
-                                width: 24,
-                                height: 24,
-                              ),
-                            ],
+                          StarRating(
+                            onRatingChanged: (newRating) {
+                              setState(() {
+                                rating = newRating;
+                              });
+                            },
                           ),
                         ],
                       ),
@@ -485,11 +467,10 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                     return;
                   }
 
-                  if(selectedImage == null) {
+                  if (selectedImage == null) {
                     showError("Por favor, selecione uma imagem de capa");
                     return;
                   }
-
 
                   final ownerId = FirebaseAuth.instance.currentUser?.uid;
                   if (ownerId == null) {
@@ -507,16 +488,20 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                       coverImage: selectedImage?.path ?? '',
                       resume: _resumeController.text,
                       images: tripImages.map((image) => image.path).toList(),
-                      rating: 2.5,
+                      rating: rating,
                       isPrivate: isPrivate,
                     ),
                   );
-                  if(context.mounted) {
+                  if (context.mounted) {
                     Navigator.of(context).pop();
                     showSuccess();
                   }
                 } catch (error, stackTrace) {
-                  log("Error creating diary", error: error, stackTrace: stackTrace);
+                  log(
+                    "Error creating diary",
+                    error: error,
+                    stackTrace: stackTrace,
+                  );
                   showError("Erro ao criar diário");
                 } finally {
                   if (mounted) {
@@ -528,7 +513,7 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
               },
               child: Builder(
                 builder: (context) {
-                  if(isLoading) {
+                  if (isLoading) {
                     return SizedBox(
                       width: 24,
                       height: 24,
@@ -539,7 +524,7 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                     );
                   }
                   return Text('Salvar Diário');
-                }
+                },
               ),
             ),
           ),

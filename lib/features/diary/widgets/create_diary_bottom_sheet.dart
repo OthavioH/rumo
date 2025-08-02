@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
@@ -8,7 +9,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:rumo/core/asset_images.dart';
 import 'package:rumo/features/diary/models/create_diary_model.dart';
+import 'package:rumo/features/diary/models/place.dart';
 import 'package:rumo/features/diary/repositories/diary_repository.dart';
+import 'package:rumo/features/diary/repositories/place_repository.dart';
 import 'package:rumo/features/diary/widgets/star_rating.dart';
 import 'package:rumo/services/location_service.dart';
 import 'package:geocoding/geocoding.dart';
@@ -21,29 +24,67 @@ class CreateDiaryBottomSheet extends StatefulWidget {
 }
 
 class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
-  final locationService = LocationService();
+  final placeRepository = PlaceRepository();
 
-  bool isPrivate = false;
   final SearchController locationSearchController = SearchController();
   final TextEditingController _tripNameController = TextEditingController();
   final TextEditingController _resumeController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  LatLng? userCoordinates;
-  List<Placemark> placemarks = [];
+  bool isPrivate = false;
   File? selectedImage;
   List<File> tripImages = [];
+  double rating = 0;
+  List<Place> places = [];
+  Place? selectedPlace;
+
+  String? lastQuery;
 
   bool isLoading = false;
-
-  double rating = 0;
+  Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      getUserLocation();
+    locationSearchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    locationSearchController.removeListener(_onSearchChanged);
+    locationSearchController.dispose();
+    _tripNameController.dispose();
+    _resumeController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged() {
+    final query = locationSearchController.text;
+
+    if(query == lastQuery) return;
+
+    setState(() {
+      lastQuery = query;
+    });
+
+    _debounce?.cancel();
+
+    if (query.trim().isEmpty) return;
+
+    _debounce = Timer(Duration(seconds: 1, milliseconds: 500), () async {
+      final remotePlaces = await placeRepository.getPlaces(query: query);
+      if (!mounted) return;
+      setState(() {
+        places = remotePlaces;
+      });
+
+      if(!locationSearchController.isOpen){
+        locationSearchController.openView();
+      } else {
+        locationSearchController.closeView(query);
+        locationSearchController.openView();
+      }
     });
   }
 
@@ -72,25 +113,6 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
         );
       },
     );
-  }
-
-  void getUserLocation() async {
-    final userPosition = await locationService.askAndGetUserLocation();
-    if (userPosition == null) {
-      return;
-    }
-
-    if (!mounted) return;
-
-    final places = await placemarkFromCoordinates(
-      userPosition.latitude!,
-      userPosition.longitude!,
-    );
-
-    setState(() {
-      userCoordinates = LatLng(userPosition.latitude!, userPosition.longitude!);
-      placemarks = places;
-    });
   }
 
   InputDecoration iconTextFieldDecoration({
@@ -243,17 +265,35 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                       barPadding: WidgetStatePropertyAll(
                         EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                       ),
+                      viewBuilder: (suggestions) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: suggestions.toList(),
+                          ),
+                        );
+                      },
                       suggestionsBuilder: (context, controller) {
-                        return List.generate(placemarks.length, (index) {
-                          final placemark = placemarks.elementAt(index);
-                          final text =
-                              '${placemark.street}, ${placemark.name}, ${placemark.locality}, ${placemark.country}';
+                        return List.generate(places.length, (index) {
+                          final place = places.elementAt(index);
+                          final address = place.address;
+                          String placeName = place.name;
+
+                          if (address != null) {
+                            placeName =
+                                '${address.amenity}, ${address.road} - ${address.city} - ${address.country}';
+                          }
+
                           return InkWell(
                             onTap: () {
-                              controller.closeView(text);
-                              controller.text = text;
+                              setState(() {
+                                controller.closeView(placeName);
+                                controller.text = placeName;
+                                selectedPlace = place;
+                              });
                             },
-                            child: Text(text),
+                            child: Text(placeName),
                           );
                         });
                       },

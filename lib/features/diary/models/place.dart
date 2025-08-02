@@ -14,6 +14,30 @@ class Place {
     this.address,
   });
 
+  String get formattedLocation {
+    String placeName = name.isNotEmpty ? name : '';
+
+    if(address == null) return placeName;
+
+    if(address!.road.isNotEmpty) {
+      placeName += ' - ${address!.road}';
+    }
+
+    if(address!.city.isNotEmpty) {
+      placeName += ' - ${address!.city}';
+    }
+
+    if(address!.state.isNotEmpty) {
+      placeName += ' - ${address!.state}';
+    }
+
+    if(address!.country.isNotEmpty) {
+      placeName += ' - ${address!.country}';
+    }
+
+    return placeName;
+  }
+
   factory Place.fromJson(Map<String, dynamic> json) {
     final lat = json['lat'] as String?;
     final lon = json['lon'] as String?;

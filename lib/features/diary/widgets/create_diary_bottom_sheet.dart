@@ -62,7 +62,7 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
   void _onSearchChanged() {
     final query = locationSearchController.text;
 
-    if(query == lastQuery) return;
+    if (query == lastQuery) return;
 
     setState(() {
       lastQuery = query;
@@ -79,7 +79,7 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
         places = remotePlaces;
       });
 
-      if(!locationSearchController.isOpen){
+      if (!locationSearchController.isOpen) {
         locationSearchController.openView();
       } else {
         locationSearchController.closeView(query);
@@ -266,34 +266,40 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                         EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                       ),
                       viewBuilder: (suggestions) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: suggestions.toList(),
-                          ),
+                        return ListView(
+                          padding: EdgeInsets.zero,
+                          children: suggestions.toList(),
                         );
                       },
                       suggestionsBuilder: (context, controller) {
                         return List.generate(places.length, (index) {
                           final place = places.elementAt(index);
-                          final address = place.address;
-                          String placeName = place.name;
-
-                          if (address != null) {
-                            placeName =
-                                '${address.amenity}, ${address.road} - ${address.city} - ${address.country}';
-                          }
+                          final formattedLocation = place.formattedLocation;
 
                           return InkWell(
                             onTap: () {
                               setState(() {
-                                controller.closeView(placeName);
-                                controller.text = placeName;
+                                controller.closeView(formattedLocation);
                                 selectedPlace = place;
+                                lastQuery = formattedLocation;
+                                _debounce?.cancel();
                               });
                             },
-                            child: Text(placeName),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 12,
+                              ),
+                              child: Text(
+                                place.formattedLocation,
+                                style: TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.normal,
+                                  color: Color(0xFF131927),
+                                ),
+                              ),
+                            ),
                           );
                         });
                       },
@@ -390,8 +396,9 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                             ),
                             Builder(
                               builder: (context) {
-                                if (tripImages.isEmpty)
+                                if (tripImages.isEmpty) {
                                   return SizedBox.shrink();
+                                }
                                 return Padding(
                                   padding: const EdgeInsets.only(top: 12),
                                   child: Wrap(

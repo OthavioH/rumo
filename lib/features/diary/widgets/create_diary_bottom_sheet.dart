@@ -6,15 +6,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:rumo/core/asset_images.dart';
 import 'package:rumo/features/diary/models/create_diary_model.dart';
 import 'package:rumo/features/diary/models/place.dart';
 import 'package:rumo/features/diary/repositories/diary_repository.dart';
 import 'package:rumo/features/diary/repositories/place_repository.dart';
 import 'package:rumo/features/diary/widgets/star_rating.dart';
-import 'package:rumo/services/location_service.dart';
-import 'package:geocoding/geocoding.dart';
 
 class CreateDiaryBottomSheet extends StatefulWidget {
   const CreateDiaryBottomSheet({super.key});

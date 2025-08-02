@@ -127,7 +127,7 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Navigator.pop(context);
                   },
                   style: TextButton.styleFrom(
                     foregroundColor: Theme.of(context).colorScheme.primary,
@@ -258,7 +258,7 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                         hintText: 'Nome da sua viagem',
                       ),
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
+                        if (value == null || value.trim().isEmpty) {
                           return 'Por favor, insira o nome da viagem';
                         }
                         return null;
@@ -278,7 +278,7 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                         hintText: 'Resumo da sua viagem',
                       ),
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
+                        if (value == null || value.trim().isEmpty) {
                           return 'Por favor, insira um breve resumo da sua viagem';
                         }
                         return null;
@@ -487,7 +487,7 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
 
 
                   final ownerId = FirebaseAuth.instance.currentUser?.uid;
-                  if (ownerId != null) {
+                  if (ownerId == null) {
                     showError("Usuário não autenticado");
                     return;
                   }
@@ -496,7 +496,7 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                   });
                   await DiaryRepository().createDiary(
                     diary: CreateDiaryModel(
-                      ownerId: ownerId!,
+                      ownerId: ownerId,
                       location: locationSearchController.text,
                       name: _tripNameController.text,
                       coverImage: selectedImage?.path ?? '',

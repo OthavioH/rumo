@@ -8,6 +8,8 @@ class CreateDiaryModel {
   final List<String> images;
   final double rating;
   final bool isPrivate;
+  final double latitude;
+  final double longitude;
 
   CreateDiaryModel({
     required this.ownerId,
@@ -17,6 +19,8 @@ class CreateDiaryModel {
     required this.resume,
     required this.images,
     required this.rating,
+    required this.latitude,
+    required this.longitude,
     this.isPrivate = false,
   });
 
@@ -29,6 +33,8 @@ class CreateDiaryModel {
       "coverImage": coverImage,
       "images": images,
       "rating": rating,
+      "latitude": latitude,
+      "longitude": longitude,
       "isPrivate": isPrivate,
     };
   }

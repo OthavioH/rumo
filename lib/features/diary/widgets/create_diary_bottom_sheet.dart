@@ -12,6 +12,8 @@ import 'package:rumo/features/diary/models/place.dart';
 import 'package:rumo/features/diary/repositories/diary_repository.dart';
 import 'package:rumo/features/diary/repositories/place_repository.dart';
 import 'package:rumo/features/diary/widgets/star_rating.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:uuid/uuid.dart';
 
 class CreateDiaryBottomSheet extends StatefulWidget {
   const CreateDiaryBottomSheet({super.key});
@@ -246,61 +248,103 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 16,
                   children: [
-                    SearchAnchor.bar(
-                      searchController: locationSearchController,
-                      barLeading: SvgPicture.asset(
-                        AssetImages.iconLocationPin,
-                        width: 24,
-                        height: 24,
-                      ),
-                      viewLeading: SvgPicture.asset(
-                        AssetImages.iconLocationPin,
-                        width: 24,
-                        height: 24,
-                      ),
-                      barHintText: 'Localização',
-                      barPadding: WidgetStatePropertyAll(
-                        EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                      ),
-                      viewBuilder: (suggestions) {
-                        return ListView(
-                          padding: EdgeInsets.zero,
-                          children: suggestions.toList(),
-                        );
-                      },
-                      suggestionsBuilder: (context, controller) {
-                        return List.generate(places.length, (index) {
-                          final place = places.elementAt(index);
-                          final formattedLocation = place.formattedLocation;
+                    FormField(
+                      validator: (_) {
+                        if (selectedPlace == null) {
+                          return 'Por favor, selecione um local';
+                        }
 
-                          return InkWell(
-                            onTap: () {
-                              setState(() {
-                                controller.closeView(formattedLocation);
-                                selectedPlace = place;
-                                lastQuery = formattedLocation;
-                                _debounce?.cancel();
-                              });
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 12,
+                        return null;
+                      },
+                      builder: (formState) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SearchAnchor.bar(
+                              searchController: locationSearchController,
+                              barLeading: SvgPicture.asset(
+                                AssetImages.iconLocationPin,
+                                width: 24,
+                                height: 24,
                               ),
-                              child: Text(
-                                place.formattedLocation,
-                                style: TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.normal,
-                                  color: Color(0xFF131927),
+                              viewLeading: SvgPicture.asset(
+                                AssetImages.iconLocationPin,
+                                width: 24,
+                                height: 24,
+                              ),
+                              barSide: WidgetStateProperty.resolveWith((
+                                _,
+                              ) {
+                                if (formState.hasError) {
+                                  return BorderSide(
+                                    color: Color(0xFFEE443F),
+                                    width: 1.5,
+                                  );
+                                }
+
+                                return BorderSide(
+                                  color: Color(0xFFE5E7EA),
+                                  width: 1.5,
+                                );
+                              }),
+                              barHintText: 'Localização',
+                              barPadding: WidgetStatePropertyAll(
+                                EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 10,
                                 ),
                               ),
+                              viewBuilder: (suggestions) {
+                                return ListView(
+                                  padding: EdgeInsets.zero,
+                                  children: suggestions.toList(),
+                                );
+                              },
+                              suggestionsBuilder: (context, controller) {
+                                return List.generate(places.length, (index) {
+                                  final place = places.elementAt(index);
+                                  final formattedLocation =
+                                      place.formattedLocation;
+
+                                  return InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        controller.closeView(formattedLocation);
+                                        selectedPlace = place;
+                                        lastQuery = formattedLocation;
+                                        _debounce?.cancel();
+                                      });
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 12,
+                                      ),
+                                      child: Text(
+                                        place.formattedLocation,
+                                        style: TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.normal,
+                                          color: Color(0xFF131927),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                });
+                              },
+                              isFullScreen: false,
                             ),
-                          );
-                        });
+                            if (formState.hasError) const SizedBox(height: 4),
+                            if (formState.hasError &&
+                                formState.errorText != null)
+                              Text(
+                                formState.errorText!,
+                                style: TextStyle(color: Color(0xFFEE443F)),
+                              ),
+                          ],
+                        );
                       },
-                      isFullScreen: false,
                     ),
                     TextFormField(
                       controller: _tripNameController,
@@ -511,6 +555,11 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                     return;
                   }
 
+                  if (selectedPlace == null) {
+                    showError("Por favor, selecione um local");
+                    return;
+                  }
+
                   if (selectedImage == null) {
                     showError("Por favor, selecione uma imagem de capa");
                     return;
@@ -524,18 +573,29 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                   setState(() {
                     isLoading = true;
                   });
-                  await DiaryRepository().createDiary(
-                    diary: CreateDiaryModel(
-                      ownerId: ownerId,
-                      location: locationSearchController.text,
-                      name: _tripNameController.text,
-                      coverImage: selectedImage?.path ?? '',
-                      resume: _resumeController.text,
-                      images: tripImages.map((image) => image.path).toList(),
-                      rating: rating,
-                      isPrivate: isPrivate,
-                    ),
+
+                  final coverUrl = await uploadImage(selectedImage!);
+
+                  final tripImagesUploads = tripImages.map((image) {
+                    return uploadImage(image);
+                  });
+
+                  final tripImagesUrls = await Future.wait(tripImagesUploads);
+
+                  final diary = CreateDiaryModel(
+                    ownerId: ownerId,
+                    location: locationSearchController.text,
+                    name: _tripNameController.text,
+                    coverImage: coverUrl,
+                    resume: _resumeController.text,
+                    images: tripImagesUrls,
+                    rating: rating,
+                    isPrivate: isPrivate,
+                    latitude: selectedPlace!.latitude,
+                    longitude: selectedPlace!.longitude,
                   );
+
+                  await DiaryRepository().createDiary(diary: diary);
                   if (context.mounted) {
                     Navigator.of(context).pop();
                     showSuccess();
@@ -576,4 +636,13 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
       ),
     ),
   );
+
+  Future<String> uploadImage(File image) async {
+    final fileType = image.path.split('.').last;
+    final imageId = Uuid().v4();
+    final filename = '$imageId.$fileType';
+    final supabase = Supabase.instance.client;
+    supabase.storage.from('images').upload(filename, image);
+    return supabase.storage.from('images').getPublicUrl(filename);
+  }
 }

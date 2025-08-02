@@ -16,5 +16,6 @@ class AssetImages {
   static const String iconThreeLines = '$_assetsPath/icon_three_lines.svg';
   static const String iconTag = '$_assetsPath/icon_tag.svg';
   static const String iconPhoto = '$_assetsPath/icon_photo.svg';
+  static const String mapPinBackground = '$_assetsPath/map_pin_background.svg';
 
 }

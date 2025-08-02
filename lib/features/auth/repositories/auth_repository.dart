@@ -57,9 +57,7 @@ class AuthRepository {
     await FirebaseAuth.instance.signOut();
   }
 
-  Future<void> sendPasswordResetEmail({
-    required String email,
-  }) async {
+  Future<void> sendPasswordResetEmail({required String email}) async {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (error) {
@@ -70,6 +68,10 @@ class AuthRepository {
 
       throw AuthException(code: error.code, originalMessage: error.message);
     }
+  }
+
+  User? getCurrentUser() {
+    return FirebaseAuth.instance.currentUser;
   }
 }
 

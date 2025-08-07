@@ -272,9 +272,7 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                                 width: 24,
                                 height: 24,
                               ),
-                              barSide: WidgetStateProperty.resolveWith((
-                                _,
-                              ) {
+                              barSide: WidgetStateProperty.resolveWith((_) {
                                 if (formState.hasError) {
                                   return BorderSide(
                                     color: Color(0xFFEE443F),
@@ -316,12 +314,9 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                                       });
                                     },
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 12,
-                                      ),
+                                      padding: const EdgeInsets.all(12),
                                       child: Text(
-                                        place.formattedLocation,
+                                        formattedLocation,
                                         style: TextStyle(
                                           fontFamily: 'Inter',
                                           fontSize: 14,
@@ -509,6 +504,7 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                       ),
                       padding: EdgeInsets.all(16),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text('Nota para a viagem'),
                           const SizedBox(height: 16),
@@ -584,7 +580,7 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
 
                   final diary = CreateDiaryModel(
                     ownerId: ownerId,
-                    location: locationSearchController.text,
+                    location: selectedPlace!.formattedLocation,
                     name: _tripNameController.text,
                     coverImage: coverUrl,
                     resume: _resumeController.text,
@@ -642,7 +638,7 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
     final imageId = Uuid().v4();
     final filename = '$imageId.$fileType';
     final supabase = Supabase.instance.client;
-    supabase.storage.from('images').upload(filename, image);
+    await supabase.storage.from('images').upload(filename, image);
     return supabase.storage.from('images').getPublicUrl(filename);
   }
 }

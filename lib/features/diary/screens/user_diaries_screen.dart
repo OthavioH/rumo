@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:rumo/features/auth/repositories/auth_repository.dart';
 import 'package:rumo/features/diary/models/diary_model.dart';
 import 'package:rumo/features/diary/repositories/diary_repository.dart';
+import 'package:rumo/features/diary/screens/user_diaries_list_view/user_diaries_list_view.dart';
 import 'package:rumo/features/diary/widgets/diary_map_marker.dart';
 import 'package:rumo/services/location_service.dart';
 
@@ -82,22 +83,7 @@ class _UserDiariesScreenState extends State<UserDiariesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomSheet: DraggableScrollableSheet(
-        expand: false,
-        initialChildSize: 0.3,
-        minChildSize: 0.3,
-        builder: (context, controller) {
-          return ListView.builder(
-            controller: controller,
-            itemCount: 40,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text('Diary $index'),
-              );
-            },
-          );
-        },
-      ),
+      bottomSheet: UserDiariesListView(),
       body: FlutterMap(
         mapController: mapController,
         options: MapOptions(
@@ -118,7 +104,7 @@ class _UserDiariesScreenState extends State<UserDiariesScreen> {
           Builder(
             builder: (context) {
               if (diaries.isEmpty) return SizedBox.shrink();
-
+    
               List<Marker> markers = diaries.map<Marker>((diary) {
                 return Marker(
                   point: LatLng(diary.latitude, diary.longitude),
@@ -127,7 +113,7 @@ class _UserDiariesScreenState extends State<UserDiariesScreen> {
                   child: DiaryMapMarker(imageUrl: diary.coverImage),
                 );
               }).toList();
-
+    
               return MarkerLayer(markers: markers);
             },
           ),

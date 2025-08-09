@@ -40,6 +40,9 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
   String? lastQuery;
 
   bool isLoading = false;
+
+  bool isFetchingPlaces = false;
+  bool hasFetchPlaceError = false;
   Timer? _debounce;
 
   @override
@@ -65,6 +68,7 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
 
     setState(() {
       lastQuery = query;
+      hasFetchPlaceError = false;
     });
 
     _debounce?.cancel();
@@ -72,19 +76,36 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
     if (query.trim().isEmpty) return;
 
     _debounce = Timer(Duration(seconds: 1, milliseconds: 500), () async {
-      final remotePlaces = await placeRepository.getPlaces(query: query);
-      if (!mounted) return;
-      setState(() {
-        places = remotePlaces;
-      });
+      try {
+        setState(() {
+          isFetchingPlaces = true;
+        });
+        closeAndOpenLocationSearch(query);
+        final remotePlaces = await placeRepository.getPlaces(query: query);
+        if (!mounted) return;
+        setState(() {
+          places = remotePlaces;
+          isFetchingPlaces = false;
+        });
 
-      if (!locationSearchController.isOpen) {
-        locationSearchController.openView();
-      } else {
-        locationSearchController.closeView(query);
-        locationSearchController.openView();
+        closeAndOpenLocationSearch(query);
+      } catch (error, stackTrace) {
+        log("Error fetching places", error: error, stackTrace: stackTrace);
+        setState(() {
+          hasFetchPlaceError = true;
+        });
+        closeAndOpenLocationSearch(query);
       }
     });
+  }
+
+  void closeAndOpenLocationSearch(String? query) {
+    if (!locationSearchController.isOpen) {
+      locationSearchController.openView();
+    } else {
+      locationSearchController.closeView(query);
+      locationSearchController.openView();
+    }
   }
 
   void showSuccess() {
@@ -293,6 +314,16 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                                 ),
                               ),
                               viewBuilder: (suggestions) {
+                                if (hasFetchPlaceError) {
+                                  return Center(
+                                    child: Text("Erro ao buscar locais"),
+                                  );
+                                }
+                                if (isFetchingPlaces) {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
                                 return ListView(
                                   padding: EdgeInsets.zero,
                                   children: suggestions.toList(),

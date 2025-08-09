@@ -19,5 +19,5 @@ class AssetImages {
   static const String mapPinBackground = '$_assetsPath/map_pin_background.svg';
   static const String iconDotsMenu = '$_assetsPath/icon_dots_menu.svg';
   static const String diaryCounterCharacter = '$_assetsPath/diary_counter_character.png';
-
+  static const String iconChevronDown = '$_assetsPath/icon_chevron_down.svg';
 }

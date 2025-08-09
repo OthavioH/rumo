@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rumo/features/diary/models/create_diary_model.dart';
 import 'package:rumo/features/diary/models/diary_model.dart';
+import 'package:rumo/features/diary/models/update_diary_model.dart';
 
 class DiaryRepository {
   late final FirebaseFirestore firestore;
@@ -11,12 +12,22 @@ class DiaryRepository {
     firestore = FirebaseFirestore.instance;
   }
 
-  Future createDiary({required CreateDiaryModel diary}) async {
+  Future<void> createDiary({required CreateDiaryModel diary}) async {
     try {
       final docRef = await firestore.collection("diaries").add(diary.toMap());
       log("Diary created with ID: ${docRef.id}");
     } catch (e, stackTrace) {
       log("Error creating diary", error: e, stackTrace: stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<void> updateDiary({required UpdateDiaryModel diary}) async {
+    try {
+      await firestore.collection("diaries").doc(diary.diaryId).update(diary.toMap());
+      log("Diary updated with ID: ${diary.diaryId}");
+    } catch (e, stackTrace) {
+      log("Error updating diary", error: e, stackTrace: stackTrace);
       rethrow;
     }
   }

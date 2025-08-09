@@ -1,31 +1,32 @@
+
 import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:rumo/features/diary/models/create_diary_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rumo/features/diary/controllers/user_diary_controller.dart';
+import 'package:rumo/features/diary/models/diary_model.dart';
+import 'package:rumo/features/diary/models/update_diary_model.dart';
 import 'package:rumo/features/diary/repositories/diary_repository.dart';
 import 'package:rumo/features/diary/widgets/diary_form/diary_form.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
-class CreateDiaryBottomSheet extends StatefulWidget {
-  const CreateDiaryBottomSheet({super.key});
+class EditDiaryBottomSheet extends ConsumerWidget {
+  final DiaryModel diary;
 
-  @override
-  State<CreateDiaryBottomSheet> createState() => _CreateDiaryBottomSheetState();
-}
+  const EditDiaryBottomSheet({super.key, required this.diary});
 
-class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
-  void showSuccess() {
+  void showSuccess(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Diário criado com sucesso!'),
+        content: Text('Diário alterado'),
         duration: Duration(seconds: 2),
       ),
     );
   }
 
-  void showError(String message) {
+  void showError(String message, BuildContext context) {
     showDialog(
       context: context,
       builder: (context) {
@@ -44,7 +45,7 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
   }
 
   @override
-  Widget build(BuildContext context) => Padding(
+  Widget build(BuildContext context, WidgetRef ref) => Padding(
     padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
     child: ListView(
       children: [
@@ -59,7 +60,7 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Novo Diário',
+                'Editar Diário',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
               ),
               TextButton(
@@ -79,13 +80,14 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
           ),
         ),
         DiaryForm(
-          buttonTitle: 'Salvar Diário',
+          diary: diary,
+          buttonTitle: 'Salvar mudanças',
           onError: (message) {
             if(message == null) {
-              showError("Erro ao criar diário");
+              showError("Erro ao editar diário", context);
               return;
             }
-            showError(message);
+            showError(message, context);
           },
           onSubmit: (result) async {
             final coverUrl = await uploadImage(result.selectedImage);
@@ -96,7 +98,8 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
 
             final tripImagesUrls = await Future.wait(tripImagesUploads);
 
-            final diary = CreateDiaryModel(
+            final updateDiaryModel = UpdateDiaryModel(
+              diaryId: diary.id,
               ownerId: result.ownerId,
               location: result.selectedPlace.formattedLocation,
               name: result.name,
@@ -109,10 +112,11 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
               longitude: result.longitude,
             );
 
-            await DiaryRepository().createDiary(diary: diary);
+            await DiaryRepository().updateDiary(diary: updateDiaryModel);
             if (context.mounted) {
               Navigator.of(context).pop();
-              showSuccess();
+              showSuccess(context);
+              ref.read(userDiaryControllerProvider.notifier).updateDiary(updateDiaryModel);
             }
           },
         ),

@@ -42,6 +42,7 @@ dependencies:
   image_picker: ^1.1.2
   latlong2: ^0.9.1
   location: ^8.0.1
+  path_provider: ^2.1.5
   supabase_flutter: ^2.9.1
   uuid: ^4.5.1
   vector_map_tiles: ^9.0.0-beta.8

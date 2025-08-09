@@ -4,7 +4,8 @@ import 'package:rumo/core/asset_images.dart';
 
 class StarRating extends StatefulWidget {
   final void Function(double rating) onRatingChanged;
-  const StarRating({required this.onRatingChanged, super.key});
+  final double? initialRating;
+  const StarRating({required this.onRatingChanged, this.initialRating, super.key});
 
   @override
   State<StarRating> createState() => _StarRatingState();
@@ -13,6 +14,12 @@ class StarRating extends StatefulWidget {
 class _StarRatingState extends State<StarRating> {
   final double size = 32;
   double rating = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    rating = widget.initialRating ?? 0;
+  }
 
   void setRating(double newRating) {
     setState(() {

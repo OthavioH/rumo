@@ -52,23 +52,23 @@ class _UserDiariesScreenState extends ConsumerState<UserDiariesScreen> {
 
     final state = ref.watch(userDiaryControllerProvider);
     final diaries = state.valueOrNull ?? [];
-    if(diaries.isEmpty && isMapReady) {
+    if (diaries.isEmpty && isMapReady) {
       mapController.move(userCooordinates!, 15);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(userDiaryControllerProvider, (_, nextState) async{
+    ref.listen(userDiaryControllerProvider, (_, nextState) async {
       if (nextState.valueOrNull != null) {
         final diaries = [];
 
-        if(diaries.isEmpty) {
+        if (diaries.isEmpty) {
           while (!isMapReady) {
             await Future.delayed(Duration(seconds: 1));
           }
 
-          if(userCooordinates == null) {
+          if (userCooordinates == null) {
             getUserLocation();
             return;
           }
@@ -92,56 +92,66 @@ class _UserDiariesScreenState extends ConsumerState<UserDiariesScreen> {
         }
       }
     });
-    return Scaffold(
-      bottomSheet: UserDiariesListView(),
-      body: FlutterMap(
-        mapController: mapController,
-        options: MapOptions(
-          initialCenter: userCooordinates ?? LatLng(0, 0),
-          onMapReady: () {
-            setState(() {
-              isMapReady = true;
-            });
-            getUserLocation();
-          },
+    final currentTheme = Theme.of(context);
+    return SafeArea(
+      child: Theme(
+        data: currentTheme.copyWith(
+          bottomSheetTheme: BottomSheetThemeData(
+            backgroundColor: Colors.transparent
+          ),
         ),
-        children: [
-          TileLayer(
-            urlTemplate:
-                'https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=$mapKey',
-            userAgentPackageName: 'br.com.othavioh.rumo',
-          ),
-          Builder(
-            builder: (context) {
-              final state = ref.watch(userDiaryControllerProvider);
-              return state.when(
-                error: (error, stackTrace) {
-                  log(
-                    "Error fetching user diaries",
-                    error: error,
-                    stackTrace: stackTrace,
+        child: Scaffold(
+          bottomSheet: UserDiariesListView(),
+          body: FlutterMap(
+            mapController: mapController,
+            options: MapOptions(
+              initialCenter: userCooordinates ?? LatLng(0, 0),
+              onMapReady: () {
+                setState(() {
+                  isMapReady = true;
+                });
+                getUserLocation();
+              },
+            ),
+            children: [
+              TileLayer(
+                urlTemplate:
+                    'https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=$mapKey',
+                userAgentPackageName: 'br.com.othavioh.rumo',
+              ),
+              Builder(
+                builder: (context) {
+                  final state = ref.watch(userDiaryControllerProvider);
+                  return state.when(
+                    error: (error, stackTrace) {
+                      log(
+                        "Error fetching user diaries",
+                        error: error,
+                        stackTrace: stackTrace,
+                      );
+                      return SizedBox.shrink();
+                    },
+                    loading: () => Center(child: CircularProgressIndicator()),
+                    data: (diaries) {
+                      if (diaries.isEmpty) return SizedBox.shrink();
+
+                      List<Marker> markers = diaries.map<Marker>((diary) {
+                        return Marker(
+                          point: LatLng(diary.latitude, diary.longitude),
+                          width: 80,
+                          height: 80,
+                          child: DiaryMapMarker(imageUrl: diary.coverImage),
+                        );
+                      }).toList();
+
+                      return MarkerLayer(markers: markers);
+                    },
                   );
-                  return SizedBox.shrink();
                 },
-                loading: () => Center(child: CircularProgressIndicator()),
-                data: (diaries) {
-                  if (diaries.isEmpty) return SizedBox.shrink();
-
-                  List<Marker> markers = diaries.map<Marker>((diary) {
-                    return Marker(
-                      point: LatLng(diary.latitude, diary.longitude),
-                      width: 80,
-                      height: 80,
-                      child: DiaryMapMarker(imageUrl: diary.coverImage),
-                    );
-                  }).toList();
-
-                  return MarkerLayer(markers: markers);
-                },
-              );
-            },
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

@@ -5,6 +5,7 @@ import 'package:rumo/core/asset_images.dart';
 import 'package:rumo/features/diary/controllers/user_diary_controller.dart';
 import 'package:rumo/features/diary/models/diary_model.dart';
 import 'package:rumo/features/diary/screens/user_diaries_list_view/widgets/delete_diary_bottom_sheet.dart';
+import 'package:rumo/features/diary/widgets/edit_diary_bottom_sheet.dart';
 
 class UserDiary extends ConsumerWidget {
   final DiaryModel diary;
@@ -46,7 +47,29 @@ class UserDiary extends ConsumerWidget {
     trailing: MenuAnchor(
       alignmentOffset: Offset(-60, 0),
       menuChildren: [
-        MenuItemButton(onPressed: () {}, child: Text("Editar diário")),
+        MenuItemButton(
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.9,
+              ),
+              backgroundColor: Color(0xFFFFFFFF),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(32),
+                  topRight: Radius.circular(32),
+                ),
+              ),
+              clipBehavior: Clip.antiAlias,
+              builder: (context) {
+                return EditDiaryBottomSheet(diary: diary);
+              },
+            );
+          },
+          child: Text("Editar diário"),
+        ),
         Divider(color: Color(0xFFD9D9D9), thickness: 1),
         MenuItemButton(
           onPressed: () {
@@ -56,7 +79,9 @@ class UserDiary extends ConsumerWidget {
                 return DeleteDiaryBottomSheet(
                   diaryId: diary.id,
                   onDelete: (String diaryId) {
-                    ref.read(userDiaryControllerProvider.notifier).deleteDiary(diaryId);
+                    ref
+                        .read(userDiaryControllerProvider.notifier)
+                        .deleteDiary(diaryId);
                   },
                 );
               },

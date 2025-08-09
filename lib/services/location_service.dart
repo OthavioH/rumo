@@ -23,7 +23,7 @@ class LocationService {
         }
       }
 
-      await location.changeSettings(accuracy: LocationAccuracy.balanced, interval: 1000);
+      await location.changeSettings(accuracy: LocationAccuracy.balanced);
 
       final userPosition = await location.getLocation();
       if (userPosition.latitude == null || userPosition.longitude == null) {

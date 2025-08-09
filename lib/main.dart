@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumo/core/helpers/app_environment.dart';
 import 'package:rumo/features/onboarding/routes/onboarding_routes.dart';
 import 'package:rumo/firebase_options.dart';
@@ -18,7 +19,7 @@ void main() async {
       anonKey: AppEnvironment.supabaseAnonKey,
     ),
   ]);
-  runApp(const MyApp());
+  runApp(ProviderScope(child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rumo/core/asset_images.dart';
+import 'package:rumo/features/diary/controllers/user_diary_controller.dart';
 import 'package:rumo/features/diary/models/diary_model.dart';
+import 'package:rumo/features/diary/screens/user_diaries_list_view/widgets/delete_diary_bottom_sheet.dart';
 
-class UserDiary extends StatelessWidget {
+class UserDiary extends ConsumerWidget {
   final DiaryModel diary;
   const UserDiary({super.key, required this.diary});
 
   @override
-  Widget build(BuildContext context) => ListTile(
+  Widget build(BuildContext context, ref) => ListTile(
     leading: ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: Image.network(
@@ -40,12 +43,47 @@ class UserDiary extends StatelessWidget {
         ),
       ],
     ),
-    trailing: IconButton(
-      onPressed: () {},
-      style: IconButton.styleFrom(
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      ),
-      icon: SvgPicture.asset(AssetImages.iconDotsMenu, width: 20, height: 20),
+    trailing: MenuAnchor(
+      alignmentOffset: Offset(-60, 0),
+      menuChildren: [
+        MenuItemButton(onPressed: () {}, child: Text("Editar diário")),
+        Divider(color: Color(0xFFD9D9D9), thickness: 1),
+        MenuItemButton(
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              builder: (context) {
+                return DeleteDiaryBottomSheet(
+                  diaryId: diary.id,
+                  onDelete: (String diaryId) {
+                    ref.read(userDiaryControllerProvider.notifier).deleteDiary(diaryId);
+                  },
+                );
+              },
+            );
+          },
+          child: Text("Excluir diário"),
+        ),
+      ],
+      builder: (context, controller, _) {
+        return IconButton(
+          onPressed: () {
+            if (controller.isOpen) {
+              controller.close();
+            } else {
+              controller.open();
+            }
+          },
+          style: IconButton.styleFrom(
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          icon: SvgPicture.asset(
+            AssetImages.iconDotsMenu,
+            width: 20,
+            height: 20,
+          ),
+        );
+      },
     ),
   );
 }

@@ -164,6 +164,19 @@ class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         horizontalTitleGap: 10,
       ),
+      menuButtonTheme: MenuButtonThemeData(
+        style: MenuItemButton.styleFrom(
+          padding: EdgeInsets.symmetric(horizontal: 26, vertical: 4),
+          maximumSize: Size.fromWidth(120),
+        ),
+      ),
+      menuTheme: MenuThemeData(
+        style: MenuStyle(
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -88,6 +88,12 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
             showError(message);
           },
           onSubmit: (result) async {
+
+            if(result.selectedPlace == null || result.latitude == null || result.longitude == null) {
+              showError("Por favor, selecione um local");
+              return;
+            }
+
             final coverUrl = await uploadImage(result.selectedImage);
 
             final tripImagesUploads = result.tripImages.map((image) {
@@ -98,15 +104,15 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
 
             final diary = CreateDiaryModel(
               ownerId: result.ownerId,
-              location: result.selectedPlace.formattedLocation,
+              location: result.selectedPlace!.formattedLocation,
               name: result.name,
               coverImage: coverUrl,
               resume: result.resume,
               images: tripImagesUrls,
               rating: result.rating,
               isPrivate: result.isPrivate,
-              latitude: result.latitude,
-              longitude: result.longitude,
+              latitude: result.latitude!,
+              longitude: result.longitude!,
             );
 
             await DiaryRepository().createDiary(diary: diary);

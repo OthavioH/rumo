@@ -69,18 +69,21 @@ class _DiaryFormState extends State<DiaryForm> {
       rating = widget.diary!.rating;
 
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        selectedImage = await fileRepository.downloadImage(
-          widget.diary!.coverImage,
-        );
-
-        final tripImagesFiles = await Future.wait(
-          widget.diary!.images.map((imageUrl) async {
-            return fileRepository.downloadImage(imageUrl);
+        await Future.wait([
+          fileRepository.downloadImage(widget.diary!.coverImage).then((file) {
+            selectedImage = file;
           }),
-        );
-
-        final nonNullTripImages = tripImagesFiles.whereType<File>().toList();
-        tripImages = nonNullTripImages;
+          Future.wait(
+            widget.diary!.images.map((imageUrl) async {
+              return fileRepository.downloadImage(imageUrl);
+            }),
+          ).then((tripImagesFiles) {
+            final nonNullTripImages = tripImagesFiles
+                .whereType<File>()
+                .toList();
+            tripImages = nonNullTripImages;
+          }),
+        ]);
 
         if (mounted) {
           setState(() {});
@@ -523,8 +526,8 @@ class _DiaryFormState extends State<DiaryForm> {
                         children: [
                           Text('Nota para a viagem'),
                           const SizedBox(height: 16),
-                          StarRating(
-                            initialRating: rating,
+                          StarRating(        
+                            initialRating: rating,                    
                             onRatingChanged: (newRating) {
                               setState(() {
                                 rating = newRating;
@@ -594,13 +597,13 @@ class _DiaryFormState extends State<DiaryForm> {
                     selectedImage: selectedImage!,
                     tripImages: tripImages,
                     ownerId: ownerId,
-                    selectedPlace: selectedPlace!,
+                    selectedPlace: selectedPlace,
                     name: _tripNameController.text,
                     resume: _resumeController.text,
                     rating: rating,
                     isPrivate: isPrivate,
-                    latitude: selectedPlace!.latitude,
-                    longitude: selectedPlace!.longitude,
+                    latitude: selectedPlace?.latitude,
+                    longitude: selectedPlace?.longitude,
                   ),
                 );
               } catch (error, stackTrace) {

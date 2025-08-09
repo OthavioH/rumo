@@ -6,13 +6,13 @@ class DiaryFormResult {
   final File selectedImage;
   final List<File> tripImages;
   final String ownerId;
-  final Place selectedPlace;
+  final Place? selectedPlace;
   final String name;
   final String resume;
   final double rating;
   final bool isPrivate;
-  final double latitude;
-  final double longitude;
+  final double? latitude;
+  final double? longitude;
 
   DiaryFormResult({
     required this.selectedImage,

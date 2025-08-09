@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:io';
 
@@ -12,7 +11,7 @@ import 'package:rumo/features/diary/widgets/diary_form/diary_form.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
-class EditDiaryBottomSheet extends ConsumerWidget {
+class EditDiaryBottomSheet extends StatelessWidget {
   final DiaryModel diary;
 
   const EditDiaryBottomSheet({super.key, required this.diary});
@@ -45,7 +44,7 @@ class EditDiaryBottomSheet extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Padding(
+  Widget build(BuildContext context) => Padding(
     padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
     child: ListView(
       children: [
@@ -79,45 +78,82 @@ class EditDiaryBottomSheet extends ConsumerWidget {
             ],
           ),
         ),
-        DiaryForm(
-          diary: diary,
-          buttonTitle: 'Salvar mudanças',
-          onError: (message) {
-            if(message == null) {
-              showError("Erro ao editar diário", context);
-              return;
-            }
-            showError(message, context);
-          },
-          onSubmit: (result) async {
-            final coverUrl = await uploadImage(result.selectedImage);
+        Consumer(
+          builder: (context, ref, _) {
+            return DiaryForm(
+              diary: diary,
+              buttonTitle: 'Salvar mudanças',
+              onError: (message) {
+                if (message == null) {
+                  showError("Erro ao editar diário", context);
+                  return;
+                }
+                showError(message, context);
+              },
+              onSubmit: (result) async {
+                final coverImageName = result.selectedImage.path
+                    .split('/')
+                    .last;
+                final diaryCoverImageName = diary.coverImage.split('/').last;
+                String coverUrl = diary.coverImage;
+                if (coverImageName != diaryCoverImageName) {
+                  coverUrl = await uploadImage(result.selectedImage);
+                }
 
-            final tripImagesUploads = result.tripImages.map((image) {
-              return uploadImage(image);
-            });
+                List<String> deletedImages = diary.images.where((image) {
+                  final imageName = image.split('/').last;
+                  return result.tripImages.every((tripImage) {
+                    final tripImageName = tripImage.path.split('/').last;
+                    return tripImageName != imageName;
+                  });
+                }).toList();
 
-            final tripImagesUrls = await Future.wait(tripImagesUploads);
+                final tripImagesUploads = result.tripImages.map((tripImage) {
+                  final tripImageName = tripImage.path.split('/').last;
+                  final isDuplicated = diary.images.any((image) {
+                    final imageName = image.split('/').last;
+                    return imageName == tripImageName;
+                  });
+                  if (!isDuplicated) {
+                    return uploadImage(tripImage);
+                  }
+                }).whereType<Future<String>>();
 
-            final updateDiaryModel = UpdateDiaryModel(
-              diaryId: diary.id,
-              ownerId: result.ownerId,
-              location: result.selectedPlace.formattedLocation,
-              name: result.name,
-              coverImage: coverUrl,
-              resume: result.resume,
-              images: tripImagesUrls,
-              rating: result.rating,
-              isPrivate: result.isPrivate,
-              latitude: result.latitude,
-              longitude: result.longitude,
+                final newImagesUrls = await Future.wait(tripImagesUploads);
+
+                final diaryImages = diary.images;
+
+                diaryImages.removeWhere((image) {
+                  return deletedImages.contains(image);
+                });
+
+                diaryImages.addAll(newImagesUrls);
+
+                final updateDiaryModel = UpdateDiaryModel(
+                  diaryId: diary.id,
+                  ownerId: result.ownerId,
+                  location:
+                      result.selectedPlace?.formattedLocation ?? diary.location,
+                  name: result.name,
+                  coverImage: coverUrl,
+                  resume: result.resume,
+                  images: diaryImages,
+                  rating: result.rating,
+                  isPrivate: result.isPrivate,
+                  latitude: result.latitude ?? diary.latitude,
+                  longitude: result.longitude ?? diary.longitude,
+                );
+
+                await DiaryRepository().updateDiary(diary: updateDiaryModel);
+                ref
+                    .read(userDiaryControllerProvider.notifier)
+                    .updateDiary(updateDiaryModel);
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                  showSuccess(context);
+                }
+              },
             );
-
-            await DiaryRepository().updateDiary(diary: updateDiaryModel);
-            if (context.mounted) {
-              Navigator.of(context).pop();
-              showSuccess(context);
-              ref.read(userDiaryControllerProvider.notifier).updateDiary(updateDiaryModel);
-            }
           },
         ),
       ],

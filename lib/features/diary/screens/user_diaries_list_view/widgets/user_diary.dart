@@ -75,6 +75,17 @@ class UserDiary extends ConsumerWidget {
           onPressed: () {
             showModalBottomSheet(
               context: context,
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.9,
+              ),
+              backgroundColor: Color(0xFFFFFFFF),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(32),
+                  topRight: Radius.circular(32),
+                ),
+              ),
+              clipBehavior: Clip.antiAlias,
               builder: (context) {
                 return DeleteDiaryBottomSheet(
                   diaryId: diary.id,

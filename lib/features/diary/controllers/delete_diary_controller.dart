@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rumo/features/diary/repositories/diary_repository.dart';
 
 final deleteDiaryControllerProvider =
     AsyncNotifierProvider.autoDispose<DeleteDiaryController, void>(
@@ -16,7 +17,7 @@ class DeleteDiaryController extends AutoDisposeAsyncNotifier<void> {
   void deleteDiary(String diaryId) async {
     try {
       state = AsyncValue.loading();
-      await Future.delayed(Duration(seconds: 5), () {});
+      await DiaryRepository().deleteDiary(diaryId: diaryId);
       state = AsyncValue.data(null);
     } catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);

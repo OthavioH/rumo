@@ -52,4 +52,12 @@ class DiaryRepository {
       rethrow;
     }
   }
+
+  Future<void> deleteDiary({required String diaryId}) async {
+    try {
+      return firestore.collection("diaries").doc(diaryId).delete();
+    } catch (error, stackTrace) {
+      log("Error deleting diary", error: error, stackTrace: stackTrace);
+    }
+  }
 }

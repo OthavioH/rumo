@@ -158,6 +158,12 @@ class AppTheme {
         trackOutlineColor: WidgetStatePropertyAll(Colors.transparent),
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
+      listTileTheme: ListTileThemeData(
+        tileColor: Color(0xFFF5F5F5),
+        contentPadding: EdgeInsets.all(12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        horizontalTitleGap: 10,
+      ),
     );
   }
 }

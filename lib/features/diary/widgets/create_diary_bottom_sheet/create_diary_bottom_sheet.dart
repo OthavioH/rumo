@@ -11,6 +11,7 @@ import 'package:rumo/features/diary/models/create_diary_model.dart';
 import 'package:rumo/features/diary/models/place.dart';
 import 'package:rumo/features/diary/repositories/diary_repository.dart';
 import 'package:rumo/features/diary/repositories/place_repository.dart';
+import 'package:rumo/features/diary/widgets/create_diary_bottom_sheet/create_diary_state.dart';
 import 'package:rumo/features/diary/widgets/star_rating.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
@@ -34,16 +35,16 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
   File? selectedImage;
   List<File> tripImages = [];
   double rating = 0;
-  List<Place> places = [];
   Place? selectedPlace;
 
   String? lastQuery;
 
   bool isLoading = false;
 
-  bool isFetchingPlaces = false;
-  bool hasFetchPlaceError = false;
   Timer? _debounce;
+
+  ValueNotifier<CreateDiaryState> createDiaryState =
+      ValueNotifier<CreateDiaryState>(CreateDiaryInitial());
 
   @override
   void initState() {
@@ -68,7 +69,6 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
 
     setState(() {
       lastQuery = query;
-      hasFetchPlaceError = false;
     });
 
     _debounce?.cancel();
@@ -77,24 +77,15 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
 
     _debounce = Timer(Duration(seconds: 1, milliseconds: 500), () async {
       try {
-        setState(() {
-          isFetchingPlaces = true;
-        });
-        closeAndOpenLocationSearch(query);
+        createDiaryState.value = CreateDiaryLoading();
         final remotePlaces = await placeRepository.getPlaces(query: query);
         if (!mounted) return;
-        setState(() {
-          places = remotePlaces;
-          isFetchingPlaces = false;
-        });
-
-        closeAndOpenLocationSearch(query);
+        createDiaryState.value = CreateDiarySuccess(places: remotePlaces);
       } catch (error, stackTrace) {
         log("Error fetching places", error: error, stackTrace: stackTrace);
-        setState(() {
-          hasFetchPlaceError = true;
-        });
-        closeAndOpenLocationSearch(query);
+        createDiaryState.value = CreateDiaryError(
+          message: "Não foi possível encontrar locais",
+        );
       }
     });
   }
@@ -314,50 +305,63 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
                                 ),
                               ),
                               viewBuilder: (suggestions) {
-                                if (hasFetchPlaceError) {
-                                  return Center(
-                                    child: Text("Erro ao buscar locais"),
-                                  );
-                                }
-                                if (isFetchingPlaces) {
-                                  return Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                }
-                                return ListView(
-                                  padding: EdgeInsets.zero,
-                                  children: suggestions.toList(),
+                                return ValueListenableBuilder(
+                                  valueListenable: createDiaryState,
+                                  builder: (context, state, _) {
+                                    return switch (state) {
+                                      CreateDiaryError error => Center(
+                                        child: Text(error.message),
+                                      ),
+                                      CreateDiaryLoading _ => Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                      CreateDiarySuccess success =>
+                                        ListView.builder(
+                                          padding: EdgeInsets.zero,
+                                          itemCount: success.places.length,
+                                          itemBuilder: (context, index) {
+                                            final place = success.places
+                                                .elementAt(index);
+                                            final formattedLocation =
+                                                place.formattedLocation;
+
+                                            return InkWell(
+                                              onTap: () {
+                                                setState(() {
+                                                  locationSearchController
+                                                      .closeView(
+                                                        formattedLocation,
+                                                      );
+                                                  selectedPlace = place;
+                                                  lastQuery = formattedLocation;
+                                                  _debounce?.cancel();
+                                                });
+                                              },
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(
+                                                  12,
+                                                ),
+                                                child: Text(
+                                                  formattedLocation,
+                                                  style: TextStyle(
+                                                    fontFamily: 'Inter',
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    color: Color(0xFF131927),
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      _ => SizedBox.shrink(),
+                                    };
+                                  },
                                 );
                               },
                               suggestionsBuilder: (context, controller) {
-                                return List.generate(places.length, (index) {
-                                  final place = places.elementAt(index);
-                                  final formattedLocation =
-                                      place.formattedLocation;
-
-                                  return InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        controller.closeView(formattedLocation);
-                                        selectedPlace = place;
-                                        lastQuery = formattedLocation;
-                                        _debounce?.cancel();
-                                      });
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(12),
-                                      child: Text(
-                                        formattedLocation,
-                                        style: TextStyle(
-                                          fontFamily: 'Inter',
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.normal,
-                                          color: Color(0xFF131927),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                });
+                                return [];
                               },
                               isFullScreen: false,
                             ),

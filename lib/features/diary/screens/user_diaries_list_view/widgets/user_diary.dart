@@ -9,10 +9,6 @@ class UserDiary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListTile(
-    tileColor: Color(0xFFF5F5F5),
-    contentPadding: EdgeInsets.all(12),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-    horizontalTitleGap: 10,
     leading: ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: Image.network(

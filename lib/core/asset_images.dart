@@ -20,4 +20,9 @@ class AssetImages {
   static const String iconDotsMenu = '$_assetsPath/icon_dots_menu.svg';
   static const String diaryCounterCharacter = '$_assetsPath/diary_counter_character.png';
   static const String iconChevronDown = '$_assetsPath/icon_chevron_down.svg';
+  static const String iconHeart = '$_assetsPath/icon_heart.svg';
+  static const String iconEmptyHeart = '$_assetsPath/icon_empty_heart.svg';
+  static const String iconChat = '$_assetsPath/icon_chat.svg';
+  static const String iconCalendar = '$_assetsPath/icon_calendar.svg';
+
 }

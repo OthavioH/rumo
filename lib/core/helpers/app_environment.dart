@@ -12,4 +12,8 @@ class AppEnvironment {
   static String get supabaseProjectUrl {
     return dotenv.env['SUPABASE_PROJECT_URL'] ?? '<SUPABASE_PROJECT_URL>';
   }
+
+  static String get mapTileKey {
+    return dotenv.env['MAPTILE_KEY'] ?? '<MAPTILE_KEY>';
+  }
 }

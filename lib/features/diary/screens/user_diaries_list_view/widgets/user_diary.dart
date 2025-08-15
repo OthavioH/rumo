@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:rumo/core/asset_images.dart';
 import 'package:rumo/features/diary/controllers/user_diary_controller.dart';
 import 'package:rumo/features/diary/models/diary_model.dart';
+import 'package:rumo/features/diary/routes/diary_routes.dart';
 import 'package:rumo/features/diary/screens/user_diaries_list_view/widgets/delete_diary_bottom_sheet.dart';
 import 'package:rumo/features/diary/widgets/edit_diary_bottom_sheet.dart';
 
@@ -13,6 +14,9 @@ class UserDiary extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) => ListTile(
+    onTap: () {
+      Navigator.pushNamed(context, DiaryRoutes.diaryDetailsScreen);
+    },
     leading: ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: Image.network(

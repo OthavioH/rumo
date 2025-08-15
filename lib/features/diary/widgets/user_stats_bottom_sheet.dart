@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rumo/core/asset_images.dart';
 import 'package:rumo/features/diary/screens/user_diaries_list_view/widgets/user_info_chip/user_info_notifier.dart';
-import 'package:skeletonizer/skeletonizer.dart';
+import 'package:rumo/widgets/bottom_sheet_drag_widget.dart';
+// import 'package:skeletonizer/skeletonizer.dart';
 
 class UserStatsBottomSheet extends StatelessWidget {
   const UserStatsBottomSheet({super.key});
@@ -26,19 +27,7 @@ class UserStatsBottomSheet extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Center(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.22,
-                    constraints: BoxConstraints(
-                      maxWidth: 87,
-                    ),
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[400],
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                ),
+                BottomSheetDragWidget(),
                 Expanded(
                   child: ListView(
                     padding: EdgeInsets.only(top: 20),

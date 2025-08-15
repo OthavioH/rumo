@@ -44,6 +44,8 @@ class _UserDiariesScreenState extends ConsumerState<UserDiariesScreen> {
       return;
     }
 
+    if(!mounted) return;
+
     setState(() {
       userCooordinates = LatLng(
         userPosition.latitude!,

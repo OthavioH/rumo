@@ -9,11 +9,25 @@ class UserInfoChip extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userAsync = ref.watch(userInfoControllerProvider);
-    if(userAsync.valueOrNull == null) {
+    if (userAsync.valueOrNull == null) {
       return SizedBox.shrink();
     }
 
     final user = userAsync.value!;
+    // return Chip(
+    //   avatar: ClipRRect(
+    //     borderRadius: BorderRadius.circular(50),
+    //     clipBehavior: Clip.antiAlias,
+    //     child: Image.asset(
+    //       user.photoURL ?? AssetImages.onboardingCharacter,
+    //       width: 20,
+    //       height: 20,
+    //       fit: BoxFit.cover,
+    //     ),
+    //   ),
+    //   label: Text(user.displayName ?? ''),
+    //   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    // );
     return Container(
       decoration: BoxDecoration(
         color: Color(0xFFFFFFFF),

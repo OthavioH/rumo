@@ -178,6 +178,26 @@ class AppTheme {
           ),
         ),
       ),
+      chipTheme: ChipThemeData(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        padding: EdgeInsets.all(4),
+        avatarBoxConstraints: BoxConstraints(
+          maxWidth: 20,
+          maxHeight: 20,
+        ),
+        labelPadding: EdgeInsets.only(
+          right: 4,
+          left: 4,
+        ),
+        labelStyle: TextStyle(
+          fontWeight: FontWeight.w500,
+          fontSize: 10,
+          color: Color(0xFF131927),
+        ),
+        side: BorderSide.none,
+      ),
     );
   }
 }

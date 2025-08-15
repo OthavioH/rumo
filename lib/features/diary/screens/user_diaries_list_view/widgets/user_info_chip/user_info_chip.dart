@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumo/core/asset_images.dart';
-import 'package:rumo/features/diary/screens/user_diaries_list_view/widgets/user_info_chip/user_info_controller.dart';
+import 'package:rumo/features/diary/screens/user_diaries_list_view/widgets/user_info_chip/user_info_notifier.dart';
 
 class UserInfoChip extends ConsumerWidget {
   const UserInfoChip({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userAsync = ref.watch(userInfoControllerProvider);
+    final userAsync = ref.watch(userInfoProvider);
     if (userAsync.valueOrNull == null) {
       return SizedBox.shrink();
     }

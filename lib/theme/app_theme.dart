@@ -112,6 +112,7 @@ class AppTheme {
             decoration: TextDecoration.underline,
             decorationColor: Colors.black,
           ),
+          padding: EdgeInsets.all(16),
         ),
       ),
 

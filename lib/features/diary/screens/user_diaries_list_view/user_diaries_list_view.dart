@@ -11,13 +11,11 @@ class UserDiariesListView extends ConsumerStatefulWidget {
   const UserDiariesListView({super.key});
 
   @override
-  ConsumerState<UserDiariesListView> createState() =>
-      _UserDiariesListViewState();
+  ConsumerState<UserDiariesListView> createState() => _UserDiariesListViewState();
 }
 
 class _UserDiariesListViewState extends ConsumerState<UserDiariesListView> {
-  final DraggableScrollableController scrollController =
-      DraggableScrollableController();
+  final DraggableScrollableController scrollController = DraggableScrollableController();
 
   final double minSize = 0.3;
   double size = 0.3;
@@ -30,7 +28,7 @@ class _UserDiariesListViewState extends ConsumerState<UserDiariesListView> {
   }
 
   void _onScroll() {
-    if (!mounted) return;
+    if (!context.mounted) return;
     setState(() {
       size = scrollController.size;
     });
@@ -54,9 +52,7 @@ class _UserDiariesListViewState extends ConsumerState<UserDiariesListView> {
           duration: Duration(milliseconds: 150),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: size < 0.9
-                ? BorderRadius.vertical(top: Radius.circular(32))
-                : BorderRadius.zero,
+            borderRadius: size < 0.9 ? BorderRadius.vertical(top: Radius.circular(32)) : BorderRadius.zero,
           ),
           child: ListView(
             controller: controller,
@@ -89,7 +85,7 @@ class _UserDiariesListViewState extends ConsumerState<UserDiariesListView> {
                           ),
                           child: SvgPicture.asset(
                             AssetImages.iconChevronDown,
-                    
+
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -100,7 +96,7 @@ class _UserDiariesListViewState extends ConsumerState<UserDiariesListView> {
               ),
               Builder(
                 builder: (context) {
-                  if(size >= 0.9) {
+                  if (size >= 0.9) {
                     return SizedBox.shrink();
                   }
                   return Padding(
@@ -118,7 +114,7 @@ class _UserDiariesListViewState extends ConsumerState<UserDiariesListView> {
                       ),
                     ),
                   );
-                }
+                },
               ),
               Text(
                 'Meus diários',
@@ -174,9 +170,7 @@ class _UserDiariesListViewState extends ConsumerState<UserDiariesListView> {
                                 ),
                                 Builder(
                                   builder: (context) {
-                                    String diaryLabel = diaries.length == 1
-                                        ? 'Diário'
-                                        : 'Diários';
+                                    String diaryLabel = diaries.length == 1 ? 'Diário' : 'Diários';
                                     return Text(
                                       diaryLabel,
                                       style: TextStyle(
@@ -230,8 +224,7 @@ class _UserDiariesListViewState extends ConsumerState<UserDiariesListView> {
                         itemCount: diaries.length,
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(height: 16),
+                        separatorBuilder: (context, index) => const SizedBox(height: 16),
                         itemBuilder: (context, index) {
                           return UserDiary(diary: diaries[index]);
                         },

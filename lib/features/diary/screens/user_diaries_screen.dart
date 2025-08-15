@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:rumo/features/diary/controllers/user_diary_controller.dart';
 import 'package:rumo/features/diary/screens/user_diaries_list_view/user_diaries_list_view.dart';
+import 'package:rumo/features/diary/screens/user_diaries_list_view/widgets/user_info_chip/user_info_chip.dart';
 import 'package:rumo/features/diary/widgets/diary_map_marker.dart';
 import 'package:rumo/services/location_service.dart';
 
@@ -77,9 +78,7 @@ class _UserDiariesScreenState extends ConsumerState<UserDiariesScreen> {
           return;
         }
 
-        final diariesCoordinates = diaries
-            .map<LatLng>((diary) => LatLng(diary.latitude, diary.longitude))
-            .toList();
+        final diariesCoordinates = diaries.map<LatLng>((diary) => LatLng(diary.latitude, diary.longitude)).toList();
 
         if (isMapReady) {
           mapController.fitCamera(
@@ -96,9 +95,7 @@ class _UserDiariesScreenState extends ConsumerState<UserDiariesScreen> {
     return SafeArea(
       child: Theme(
         data: currentTheme.copyWith(
-          bottomSheetTheme: BottomSheetThemeData(
-            backgroundColor: Colors.transparent
-          ),
+          bottomSheetTheme: BottomSheetThemeData(backgroundColor: Colors.transparent),
         ),
         child: Scaffold(
           bottomSheet: UserDiariesListView(),
@@ -115,8 +112,7 @@ class _UserDiariesScreenState extends ConsumerState<UserDiariesScreen> {
             ),
             children: [
               TileLayer(
-                urlTemplate:
-                    'https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=$mapKey',
+                urlTemplate: 'https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=$mapKey',
                 userAgentPackageName: 'br.com.othavioh.rumo',
               ),
               Builder(
@@ -148,6 +144,13 @@ class _UserDiariesScreenState extends ConsumerState<UserDiariesScreen> {
                     },
                   );
                 },
+              ),
+              Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: UserInfoChip()
+                ),
               ),
             ],
           ),

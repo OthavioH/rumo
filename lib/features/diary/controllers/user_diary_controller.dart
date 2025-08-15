@@ -15,8 +15,9 @@ class UserDiaryController extends AutoDisposeAsyncNotifier<List<DiaryModel>> {
   final _diaryRepository = DiaryRepository();
 
   @override
-  FutureOr<List<DiaryModel>> build() {
-    final userId = AuthRepository().getCurrentUser()?.uid;
+  FutureOr<List<DiaryModel>> build() async {
+    final user = await AuthRepository().getCurrentUser();
+    final userId = user?.uid;
     if (userId == null) return [];
 
     return _diaryRepository.getUserDiaries(userId: userId);

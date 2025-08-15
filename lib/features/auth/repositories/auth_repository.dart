@@ -70,7 +70,7 @@ class AuthRepository {
     }
   }
 
-  User? getCurrentUser() {
+  Future<User?> getCurrentUser() async {
     return FirebaseAuth.instance.currentUser;
   }
 }

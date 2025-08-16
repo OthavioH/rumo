@@ -7,6 +7,12 @@ class AppTheme {
     primary: Color(0xFF4E61F6),
     surface: Colors.white,
   );
+  ColorScheme get darkColorScheme => ColorScheme.fromSeed(
+    seedColor: Color(0xFF4E61F6),
+    brightness: Brightness.dark,
+    primary: Color(0xFF4E61F6),
+    surface: Colors.black,
+  );
 
   ThemeData get theme {
     return ThemeData(
@@ -208,8 +214,213 @@ class AppTheme {
           fontSize: 24,
           fontWeight: FontWeight.w600,
           color: Color(0xFF1E1E1E),
-        )
-      )
+        ),
+      ),
+    );
+  }
+
+  ThemeData get darkTheme {
+    return ThemeData(
+      fontFamily: 'Inter',
+      colorScheme: darkColorScheme,
+      searchViewTheme: SearchViewThemeData(
+        constraints: BoxConstraints(maxHeight: 250),
+        backgroundColor: Color(0xFFF9FAFB),
+        side: BorderSide(color: Color(0xFFE5E7EA), width: 1.5),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 6,
+        headerHintStyle: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: Color(0xFF757575),
+        ),
+        headerTextStyle: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 14,
+          fontWeight: FontWeight.normal,
+          color: Color(0xFF1E1E1E),
+        ),
+        dividerColor: Colors.transparent,
+        barPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      ),
+      searchBarTheme: SearchBarThemeData(
+        backgroundColor: WidgetStatePropertyAll(Color(0xFFF9FAFB)),
+        side: WidgetStatePropertyAll(
+          BorderSide(color: Color(0xFFE5E7EA), width: 1.5),
+        ),
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+        elevation: WidgetStatePropertyAll(0),
+        hintStyle: WidgetStatePropertyAll(
+          TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFF757575),
+          ),
+        ),
+        textStyle: WidgetStatePropertyAll(
+          TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 14,
+            fontWeight: FontWeight.normal,
+            color: Color(0xFF1E1E1E),
+          ),
+        ),
+      ),
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: darkColorScheme.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(32),
+            topRight: Radius.circular(32),
+          ),
+        ),
+        clipBehavior: Clip.antiAlias,
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          minimumSize: Size.fromHeight(48),
+          backgroundColor: Color(0xFF4E61F6),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          padding: EdgeInsets.symmetric(vertical: 16),
+          textStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w600,
+            height: 1.33,
+          ),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          side: BorderSide(color: Color(0xFF4E61F6), width: 1.5),
+          padding: EdgeInsets.symmetric(vertical: 16),
+          foregroundColor: Color(0xFF4E61F6),
+          textStyle: TextStyle(
+            fontSize: 16,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: Colors.black,
+          textStyle: TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            height: 24 / 12,
+            decoration: TextDecoration.underline,
+            decorationColor: Colors.black,
+          ),
+          padding: EdgeInsets.all(16),
+        ),
+      ),
+
+      /// InputDecorationTheme controla a aparência dos inputs de texto
+      inputDecorationTheme: InputDecorationTheme(
+        hintStyle: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          color: Color(0xFF9EA2AE),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Color(0xFFE5E7EA), width: 1.5),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Color(0xFF4E61F6), width: 1.5),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Color(0xFFE5E7EA), width: 1.5),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Color(0xFFEE443F), width: 1.5),
+        ),
+        fillColor: WidgetStateColor.resolveWith((states) {
+          if (states.contains(WidgetState.error)) {
+            return Color(0xFFFDECEC);
+          }
+          return Color(0xFFF9FAFB);
+        }),
+        filled: true,
+      ),
+
+      dialogTheme: DialogThemeData(backgroundColor: colorScheme.surface),
+
+      switchTheme: SwitchThemeData(
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return Color(0xFF4E61F6);
+          }
+          return Color(0xFFE5E7EA);
+        }),
+        thumbColor: WidgetStatePropertyAll(Colors.white),
+        thumbIcon: WidgetStatePropertyAll(const Icon(null)),
+        trackOutlineColor: WidgetStatePropertyAll(Colors.transparent),
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+      listTileTheme: ListTileThemeData(
+        tileColor: Color(0xFFF5F5F5),
+        contentPadding: EdgeInsets.all(12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        horizontalTitleGap: 10,
+      ),
+      menuButtonTheme: MenuButtonThemeData(
+        style: MenuItemButton.styleFrom(
+          padding: EdgeInsets.symmetric(horizontal: 26, vertical: 4),
+          maximumSize: Size.fromWidth(120),
+        ),
+      ),
+      menuTheme: MenuThemeData(
+        style: MenuStyle(
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        ),
+      ),
+      chipTheme: ChipThemeData(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        padding: EdgeInsets.all(4),
+        avatarBoxConstraints: BoxConstraints(
+          maxWidth: 20,
+          maxHeight: 20,
+        ),
+        labelPadding: EdgeInsets.only(
+          right: 4,
+          left: 4,
+        ),
+        labelStyle: TextStyle(
+          fontWeight: FontWeight.w500,
+          fontSize: 10,
+          color: Color(0xFF131927),
+        ),
+        side: BorderSide.none,
+      ),
+      appBarTheme: AppBarTheme(
+        titleTextStyle: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 24,
+          fontWeight: FontWeight.w600,
+          color: Color(0xFF1E1E1E),
+        ),
+      ),
     );
   }
 }

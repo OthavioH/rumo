@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,8 +33,8 @@ class DiaryDetailsScreen extends ConsumerWidget {
             // }
             return Stack(
               children: [
-                Image.network(
-                  'https://i.pinimg.com/736x/20/2c/93/202c93cc9d7f26578c00f3b350dec976.jpg',
+                CachedNetworkImage(
+                  imageUrl: 'https://i.pinimg.com/736x/20/2c/93/202c93cc9d7f26578c00f3b350dec976.jpg',
                   width: double.maxFinite,
                   height: 115,
                   fit: BoxFit.cover,

@@ -31,6 +31,8 @@ class MyApp extends StatelessWidget {
       title: 'Rumo',
       debugShowCheckedModeBanner: false,
       theme: AppTheme().theme,
+      // darkTheme: AppTheme().darkTheme,
+      // themeMode: ThemeMode.system,
       routes: AppRouter.routes,
       initialRoute: OnboardingRoutes.onboardingScreen,
     );

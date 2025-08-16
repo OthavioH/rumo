@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class DiaryComment extends StatelessWidget {
@@ -18,8 +19,8 @@ class DiaryComment extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(50),
               clipBehavior: Clip.antiAlias,
-              child: Image.network(
-                'https://i.pinimg.com/736x/20/2c/93/202c93cc9d7f26578c00f3b350dec976.jpg',
+              child: CachedNetworkImage(
+                imageUrl: 'https://i.pinimg.com/736x/20/2c/93/202c93cc9d7f26578c00f3b350dec976.jpg',
                 width: 29,
                 height: 29,
                 fit: BoxFit.cover,

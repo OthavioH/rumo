@@ -53,6 +53,27 @@ class DiaryRepository {
     }
   }
 
+  Future<List<DiaryModel>> getAllUsersDiaries() async {
+    try {
+      final querySnapshot = await firestore
+          .collection("diaries")
+          .where("isPrivate", isEqualTo: false)
+          .get();
+      if (querySnapshot.size <= 0) {
+        return [];
+      }
+      return querySnapshot.docs.map((doc) {
+        final data = doc.data();
+        final id = doc.id;
+        data['id'] = id;
+        return DiaryModel.fromJson(data);
+      }).toList();
+    } catch (e) {
+      log("Error fetching user diaries", error: e);
+      rethrow;
+    }
+  }
+
   Future<void> deleteDiary({required String diaryId}) async {
     try {
       return firestore.collection("diaries").doc(diaryId).delete();

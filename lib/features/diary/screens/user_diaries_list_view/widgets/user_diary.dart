@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -20,8 +21,8 @@ class UserDiary extends ConsumerWidget {
       },
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(10),
-        child: Image.network(
-          diary.coverImage,
+        child: CachedNetworkImage(
+          imageUrl: diary.coverImage,
           width: 50,
           height: 50,
           fit: BoxFit.cover,

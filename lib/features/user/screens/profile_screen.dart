@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -58,12 +59,12 @@ class ProfileScreen extends ConsumerWidget {
                           ClipRRect(
                             borderRadius: BorderRadius.circular(50),
                             clipBehavior: Clip.antiAlias,
-                            child: Image.network(
-                              user?.photoURL ?? '',
+                            child: CachedNetworkImage(
+                              imageUrl: user?.photoURL ?? '',
                               width: 52,
                               height: 52,
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
+                              errorWidget: (context, error, stackTrace) {
                                 return Container(
                                   padding: EdgeInsets.all(10),
                                   decoration: BoxDecoration(color: Color(0xFF7584FA), shape: BoxShape.circle),

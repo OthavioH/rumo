@@ -60,7 +60,7 @@ class SearchUsersController extends AutoDisposeAsyncNotifier<List<FollowingUserT
 
     state = AsyncData(updatedList);
 
-    await _followRepository.followUser(
+    _followRepository.followUser(
       localUser.uid,
       userTemplate.user!.id,
     );
@@ -86,7 +86,7 @@ class SearchUsersController extends AutoDisposeAsyncNotifier<List<FollowingUserT
 
     state = AsyncData(updatedList);
 
-    await _followRepository.unfollowUser(
+    _followRepository.unfollowUser(
       localUser.uid,
       userTemplate.user!.id,
     );

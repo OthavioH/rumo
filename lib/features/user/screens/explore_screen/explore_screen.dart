@@ -66,8 +66,8 @@ class FollowButton extends StatelessWidget {
   final String userId;
   final String? targetUserId;
   final bool isFollowing;
-  final VoidCallback onFollowed;
-  final VoidCallback onUnfollowed;
+  final void Function() onFollowed;
+  final void Function() onUnfollowed;
   const FollowButton({
     super.key,
     required this.userId,

@@ -19,6 +19,7 @@ class ProfileScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Perfil'),
+        automaticallyImplyLeading: false,
       ),
       body: SafeArea(
         child: Padding(

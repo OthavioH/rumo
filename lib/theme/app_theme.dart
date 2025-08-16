@@ -178,7 +178,7 @@ class AppTheme {
       menuButtonTheme: MenuButtonThemeData(
         style: MenuItemButton.styleFrom(
           padding: EdgeInsets.symmetric(horizontal: 26, vertical: 4),
-          maximumSize: Size.fromWidth(120),
+          maximumSize: Size.fromWidth(200),
         ),
       ),
       menuTheme: MenuThemeData(

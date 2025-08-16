@@ -107,6 +107,61 @@ class DiaryRepository {
     }
   }
 
+  Future<List<DiaryModel>> getFollowersDiaries({
+    required String targetUserId,
+  }) async {
+    try {
+      final followingsQuery = await firestore
+          .collection("follows")
+          .where(
+            "targetUserId",
+            isEqualTo: targetUserId,
+          )
+          .get();
+      if (followingsQuery.size <= 0) {
+        return [];
+      }
+      List<DiaryModel> diaries = [];
+
+      for (var followDoc in followingsQuery.docs) {
+        final userId = followDoc.data()['userId'] as String?;
+
+        if (userId == null) continue;
+
+        final userDiaries = await getUserDiaries(userId: userId);
+        diaries.addAll(userDiaries);
+      }
+
+      return diaries;
+    } catch (e) {
+      log("Error fetching user diaries", error: e);
+      rethrow;
+    }
+  }
+
+  Future<List<DiaryModel>> getFollowersAndFollowingDiaries({
+    required String userId,
+  }) async {
+    final followingDiaries = await getFollowingsDiaries(userId: userId);
+    final followersDiaries = await getFollowersDiaries(targetUserId: userId);
+
+    return [...followingDiaries, ...followersDiaries];
+  }
+
+  Future<int> getUserDiariesCount({
+    required String userId,
+  }) async {
+    final query = await firestore
+        .collection("diaries")
+        .where(
+          "ownerId",
+          isEqualTo: userId,
+        )
+        .count()
+        .get();
+    return query.count ?? 0;
+  }
+
   Future<void> deleteDiary({required String diaryId}) async {
     try {
       return firestore.collection("diaries").doc(diaryId).delete();

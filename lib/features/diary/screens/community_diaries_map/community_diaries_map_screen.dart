@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:rumo/core/helpers/app_environment.dart';
 import 'package:rumo/features/diary/screens/community_diaries_map/community_diaries_map_controller.dart';
-import 'package:rumo/features/diary/screens/user_diaries_list_view/widgets/user_info_chip/user_info_chip.dart';
+import 'package:rumo/features/diary/screens/community_diaries_map/widgets/diary_filter_chip.dart';
 import 'package:rumo/features/diary/screens/user_diaries_list_view/widgets/user_info_chip/user_info_notifier.dart';
 import 'package:rumo/features/diary/widgets/diary_map_marker.dart';
 import 'package:rumo/features/diary/widgets/user_stats_bottom_sheet.dart';
@@ -27,6 +27,8 @@ class _CommunityDiariesMapScreenState extends ConsumerState<CommunityDiariesMapS
 
   LatLng? userCooordinates;
 
+  DiaryFilter currentFilter = DiaryFilter.all;
+
   void getUserLocation() async {
     final userPosition = await locationService.askAndGetUserLocation();
     if (userPosition == null) {
@@ -42,7 +44,7 @@ class _CommunityDiariesMapScreenState extends ConsumerState<CommunityDiariesMapS
       );
     });
 
-    final state = ref.watch(communityDiariesMapControllerProvider);
+    final state = ref.watch(communityDiariesMapControllerProvider(currentFilter));
     final diaries = state.valueOrNull ?? [];
     if (diaries.isEmpty && isMapReady) {
       mapController.move(userCooordinates!, 15);
@@ -51,7 +53,7 @@ class _CommunityDiariesMapScreenState extends ConsumerState<CommunityDiariesMapS
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(communityDiariesMapControllerProvider, (_, nextState) async {
+    ref.listen(communityDiariesMapControllerProvider(currentFilter), (_, nextState) async {
       if (nextState.valueOrNull != null) {
         final diaries = nextState.valueOrNull!;
 
@@ -109,7 +111,7 @@ class _CommunityDiariesMapScreenState extends ConsumerState<CommunityDiariesMapS
               Consumer(
                 builder: (context, ref, _) {
                   final user = ref.watch(userInfoProvider).valueOrNull;
-                  final state = ref.watch(communityDiariesMapControllerProvider);
+                  final state = ref.watch(communityDiariesMapControllerProvider(currentFilter));
                   return state.when(
                     error: (error, stackTrace) {
                       log(
@@ -144,7 +146,14 @@ class _CommunityDiariesMapScreenState extends ConsumerState<CommunityDiariesMapS
                 alignment: Alignment.topCenter,
                 child: Padding(
                   padding: const EdgeInsets.only(top: 16),
-                  child: UserInfoChip(),
+                  child: DiaryFilterChip(
+                    currentFilter: currentFilter,
+                    onChangeFilter: (filter) {
+                      setState(() {
+                        currentFilter = filter;
+                      });
+                    },
+                  ),
                 ),
               ),
             ],

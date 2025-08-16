@@ -3,6 +3,7 @@ import 'package:rumo/core/asset_images.dart';
 import 'package:rumo/features/diary/screens/community_diaries_map/community_diaries_map_screen.dart';
 import 'package:rumo/features/diary/screens/user_diaries_screen.dart';
 import 'package:rumo/features/home/widgets/bottom_nav_item.dart';
+import 'package:rumo/features/user/screens/explore_screen/explore_screen.dart';
 import 'package:rumo/features/user/screens/profile_screen.dart';
 import 'package:rumo/features/diary/widgets/create_diary_bottom_sheet/create_diary_bottom_sheet.dart';
 
@@ -87,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context) {
           return switch (currentIndex) {
             1 => UserDiariesScreen(),
-            2 => Center(child: Text('Explorar')),
+            2 => ExploreScreen(),
             3 => ProfileScreen(),
             _ => CommunityDiariesMapScreen(),
           };

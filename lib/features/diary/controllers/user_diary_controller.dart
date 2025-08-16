@@ -20,7 +20,7 @@ class UserDiaryController extends AutoDisposeAsyncNotifier<List<DiaryModel>> {
     final userId = user?.uid;
     if (userId == null) return [];
 
-    return _diaryRepository.getUserDiaries(userId: userId);
+    return _diaryRepository.getUserDiaries(userId: userId, includePrivates: true);
   }
 
   void deleteDiary(String diaryId) {

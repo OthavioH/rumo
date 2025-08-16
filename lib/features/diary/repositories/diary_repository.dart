@@ -32,12 +32,22 @@ class DiaryRepository {
     }
   }
 
-  Future<List<DiaryModel>> getUserDiaries({required String userId}) async {
+  Future<List<DiaryModel>> getUserDiaries({
+    required String userId,
+    bool includePrivates = false,
+  }) async {
     try {
-      final querySnapshot = await firestore
+      Query<Map<String, dynamic>> query = firestore
           .collection("diaries")
-          .where("ownerId", isEqualTo: userId)
-          .get();
+          .where(
+            "ownerId",
+            isEqualTo: userId,
+          );
+
+      if (!includePrivates) {
+        query = query.where("isPrivate", isEqualTo: false);
+      }
+      final querySnapshot = await query.get();
       if (querySnapshot.size <= 0) {
         return [];
       }
@@ -55,10 +65,7 @@ class DiaryRepository {
 
   Future<List<DiaryModel>> getAllUsersDiaries() async {
     try {
-      final querySnapshot = await firestore
-          .collection("diaries")
-          .where("isPrivate", isEqualTo: false)
-          .get();
+      final querySnapshot = await firestore.collection("diaries").where("isPrivate", isEqualTo: false).get();
       if (querySnapshot.size <= 0) {
         return [];
       }
@@ -68,6 +75,32 @@ class DiaryRepository {
         data['id'] = id;
         return DiaryModel.fromJson(data);
       }).toList();
+    } catch (e) {
+      log("Error fetching user diaries", error: e);
+      rethrow;
+    }
+  }
+
+  Future<List<DiaryModel>> getFollowingsDiaries({
+    required String userId,
+  }) async {
+    try {
+      final followingsQuery = await firestore.collection("follows").where("userId", isEqualTo: userId).get();
+      if (followingsQuery.size <= 0) {
+        return [];
+      }
+      List<DiaryModel> diaries = [];
+
+      for (var followDoc in followingsQuery.docs) {
+        final targetUserId = followDoc.data()['targetUserId'] as String?;
+
+        if (targetUserId == null) continue;
+
+        final userDiaries = await getUserDiaries(userId: targetUserId);
+        diaries.addAll(userDiaries);
+      }
+
+      return diaries;
     } catch (e) {
       log("Error fetching user diaries", error: e);
       rethrow;

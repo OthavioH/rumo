@@ -2,6 +2,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rumo/features/auth/repositories/auth_repository.dart';
 import 'package:rumo/features/diary/models/diary_model.dart';
 import 'package:rumo/features/diary/repositories/diary_repository.dart';
 
@@ -15,7 +16,12 @@ class CommunityDiariesMapController extends AutoDisposeAsyncNotifier<List<DiaryM
 
   @override
   FutureOr<List<DiaryModel>> build() async {
-    return _diaryRepository.getAllUsersDiaries();
+    final user = await AuthRepository().getCurrentUser();
+    if (user?.uid == null) {
+      return [];
+    }
+    final userId = user!.uid;
+    return _diaryRepository.getFollowingsDiaries(userId: userId);
   }
 
 }

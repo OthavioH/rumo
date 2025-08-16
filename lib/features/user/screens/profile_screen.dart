@@ -14,7 +14,11 @@ class ProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final userAsync = ref.watch(profileControllerProvider);
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Perfil'),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -22,7 +26,6 @@ class ProfileScreen extends ConsumerWidget {
             children: [
               Builder(
                 builder: (context) {
-                  final userAsync = ref.watch(profileControllerProvider);
                   if (userAsync.isLoading) {
                     return CircularProgressIndicator();
                   }
@@ -43,7 +46,11 @@ class ProfileScreen extends ConsumerWidget {
                       ref.read(profileControllerProvider.notifier).changeImage(imageUrl);
                     },
                     child: Container(
-                      color: Colors.grey,
+                      decoration: BoxDecoration(
+                        color: Color(0xFFF5F5F5),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      padding: EdgeInsets.all(16),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         spacing: 16,
@@ -71,7 +78,14 @@ class ProfileScreen extends ConsumerWidget {
                             ),
                           ),
                           Expanded(
-                            child: Text('Toque para alterar a foto'),
+                            child: Text(
+                              'Toque para alterar a foto',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14,
+                                color: Color(0xFF2C2C2C),
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -79,6 +93,46 @@ class ProfileScreen extends ConsumerWidget {
                   );
                 },
               ),
+              const SizedBox(height: 16),
+              Container(
+                decoration: BoxDecoration(
+                  color: Color(0xFFF5F5F5),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                padding: EdgeInsets.all(16),
+                child: Builder(
+                  builder: (context) {
+                    if (userAsync.isLoading) {
+                      return CircularProgressIndicator();
+                    }
+                    final user = userAsync.valueOrNull;
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Nome: ',
+                          style: TextStyle(
+                            fontWeight: FontWeight.normal,
+                            fontSize: 12,
+                            color: Color(0xFF767676),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            (user?.displayName ?? ''),
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                              color: Color(0xFF2C2C2C),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 80),
               OutlinedButton(
                 onPressed: () {
                   showModalBottomSheet(

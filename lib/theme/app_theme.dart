@@ -202,6 +202,14 @@ class AppTheme {
         ),
         side: BorderSide.none,
       ),
+      appBarTheme: AppBarTheme(
+        titleTextStyle: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 24,
+          fontWeight: FontWeight.w600,
+          color: Color(0xFF1E1E1E),
+        )
+      )
     );
   }
 }

@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:rumo/features/diary/models/create_diary_model.dart';
 import 'package:rumo/features/diary/repositories/diary_repository.dart';
 import 'package:rumo/features/diary/widgets/diary_form/diary_form.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:uuid/uuid.dart';
+import 'package:rumo/repositories/image_upload_repository.dart';
 
 class CreateDiaryBottomSheet extends StatefulWidget {
   const CreateDiaryBottomSheet({super.key});
@@ -127,11 +126,6 @@ class _CreateDiaryBottomSheetState extends State<CreateDiaryBottomSheet> {
   );
 
   Future<String> uploadImage(File image) async {
-    final fileType = image.path.split('.').last;
-    final imageId = Uuid().v4();
-    final filename = '$imageId.$fileType';
-    final supabase = Supabase.instance.client;
-    await supabase.storage.from('images').upload(filename, image);
-    return supabase.storage.from('images').getPublicUrl(filename);
+    return ImageUploadRepository().uploadImage(image);
   }
 }

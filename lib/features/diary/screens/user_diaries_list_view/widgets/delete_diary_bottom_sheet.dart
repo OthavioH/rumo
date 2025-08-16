@@ -16,12 +16,20 @@ class DeleteDiaryBottomSheet extends ConsumerWidget {
         error: (error, stackTrace) {
           log("Error on delete diary", error: error, stackTrace: stackTrace);
           Navigator.of(context).pop();
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Algo deu errado')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Algo deu errado'),
+            ),
+          );
         },
         loading: () {},
         data: (_) {
           Navigator.of(context).pop();
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Diário excluído')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Diário excluído'),
+            ),
+          );
           onDelete(diaryId);
         },
       );
@@ -64,7 +72,12 @@ class DeleteDiaryBottomSheet extends ConsumerWidget {
             const SizedBox(height: 16),
             Text(
               "Todas as informações registradas nele serão perdidas de forma definitiva.",
-              style: TextStyle(fontFamily: 'Inter', fontSize: 12, fontWeight: FontWeight.normal, color: Color(0xFF757575)),
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 12,
+                fontWeight: FontWeight.normal,
+                color: Color(0xFF757575),
+              ),
             ),
             const SizedBox(height: 32),
             FilledButton(
@@ -73,7 +86,7 @@ class DeleteDiaryBottomSheet extends ConsumerWidget {
               },
               child: Text('Cancelar'),
             ),
-            const SizedBox(height:12),
+            const SizedBox(height: 12),
             Center(
               child: TextButton(
                 style: TextButton.styleFrom(

@@ -13,7 +13,7 @@ class BottomSheetDragWidget extends StatelessWidget {
         ),
         height: 4,
         decoration: BoxDecoration(
-          color: Colors.grey[400],
+          color: Color(0xFFD9D9D9),
           borderRadius: BorderRadius.circular(2),
         ),
       ),

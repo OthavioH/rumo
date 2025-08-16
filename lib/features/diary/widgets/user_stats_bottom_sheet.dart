@@ -64,7 +64,7 @@ class UserStatsBottomSheet extends StatelessWidget {
                               SizedBox(width: 8),
                               Flexible(
                                 child: Text(
-                                  user?.displayName ?? 'Guilherme Souza',
+                                  user?.displayName ?? '',
                                   style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 24,
@@ -80,6 +80,7 @@ class UserStatsBottomSheet extends StatelessWidget {
                       Wrap(
                         spacing: 16,
                         alignment: WrapAlignment.spaceEvenly,
+                        runSpacing: 16,
                         children: [
                           _UserStats(
                             data: 0,
@@ -118,7 +119,7 @@ class _UserStats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 104,
+      width: 102,
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Color(0xFFF5F5F5),
@@ -126,13 +127,17 @@ class _UserStats extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 8,
         children: [
           Text(
             data.toString(),
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18, color: Color(0xFF4E61F6)),
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 18,
+              color: Color(0xFF4E61F6),
+            ),
             softWrap: false,
           ),
-          const SizedBox(height: 8),
           Text(
             title,
             style: TextStyle(

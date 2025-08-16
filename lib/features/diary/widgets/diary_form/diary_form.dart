@@ -14,8 +14,6 @@ import 'package:rumo/features/diary/repositories/file_repository.dart';
 import 'package:rumo/features/diary/repositories/place_repository.dart';
 import 'package:rumo/features/diary/widgets/create_diary_bottom_sheet/create_diary_state.dart';
 import 'package:rumo/features/diary/widgets/star_rating.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:uuid/uuid.dart';
 
 class DiaryForm extends StatefulWidget {
   final DiaryModel? diary;
@@ -640,14 +638,5 @@ class _DiaryFormState extends State<DiaryForm> {
         ),
       ],
     );
-  }
-
-  Future<String> uploadImage(File image) async {
-    final fileType = image.path.split('.').last;
-    final imageId = Uuid().v4();
-    final filename = '$imageId.$fileType';
-    final supabase = Supabase.instance.client;
-    await supabase.storage.from('images').upload(filename, image);
-    return supabase.storage.from('images').getPublicUrl(filename);
   }
 }

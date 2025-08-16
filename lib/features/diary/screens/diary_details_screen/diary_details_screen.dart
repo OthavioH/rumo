@@ -109,27 +109,27 @@ class DiaryDetailsScreen extends ConsumerWidget {
                                         ],
                                       ),
                                     ),
-                                    MenuAnchor(
-                                      alignmentOffset: Offset(-60, 0),
-                                      menuChildren: [],
-                                      builder: (context, controller, _) {
-                                        return GestureDetector(
-                                          onTap: () {},
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                              top: 6,
-                                              bottom: 6,
-                                              left: 6,
-                                            ),
-                                            child: SvgPicture.asset(
-                                              AssetImages.iconDotsMenu,
-                                              width: 20,
-                                              height: 20,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
+                                    // MenuAnchor(
+                                    //   alignmentOffset: Offset(-60, 0),
+                                    //   menuChildren: [],
+                                    //   builder: (context, controller, _) {
+                                    //     return GestureDetector(
+                                    //       onTap: () {},
+                                    //       child: Padding(
+                                    //         padding: const EdgeInsets.only(
+                                    //           top: 6,
+                                    //           bottom: 6,
+                                    //           left: 6,
+                                    //         ),
+                                    //         child: SvgPicture.asset(
+                                    //           AssetImages.iconDotsMenu,
+                                    //           width: 20,
+                                    //           height: 20,
+                                    //         ),
+                                    //       ),
+                                    //     );
+                                    //   },
+                                    // ),
                                   ],
                                 ),
                                 const SizedBox(height: 16),

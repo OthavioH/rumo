@@ -142,7 +142,10 @@ class _CommunityDiariesMapScreenState extends ConsumerState<CommunityDiariesMapS
               ),
               Align(
                 alignment: Alignment.topCenter,
-                child: Padding(padding: const EdgeInsets.only(top: 16), child: UserInfoChip()),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: UserInfoChip(),
+                ),
               ),
             ],
           ),

@@ -10,15 +10,18 @@ final searchUsersControllerProvider = AsyncNotifierProvider.autoDispose<SearchUs
 );
 
 class SearchUsersController extends AutoDisposeAsyncNotifier<List<FollowingUserTemplate>> {
+  final AuthRepository _authRepository = AuthRepository();
+  final FollowRepository _followRepository = FollowRepository();
+
   @override
   FutureOr<List<FollowingUserTemplate>> build() async {
-    final user = await AuthRepository().getCurrentUser();
+    final user = await _authRepository.getCurrentUser();
     final userId = user?.uid;
     if (userId == null) {
       return [];
     }
-    final followings = await FollowRepository().getFollowings(userId: userId);
-    final nonFollowings = await FollowRepository().getNonFollowingUsers(userId: userId);
+    final followings = await _followRepository.getFollowings(userId: userId);
+    final nonFollowings = await _followRepository.getNonFollowingUsers(userId: userId);
 
     List<FollowingUserTemplate> followingUsers = [];
 
@@ -36,10 +39,62 @@ class SearchUsersController extends AutoDisposeAsyncNotifier<List<FollowingUserT
 
     return followingUsers;
   }
+
+  void followUser(FollowingUserTemplate userTemplate) async {
+    if (userTemplate.user == null) return;
+    final localUser = await _authRepository.getCurrentUser();
+
+    if (localUser == null) return;
+
+    userTemplate.isFollowing = true;
+
+    final indexOfTemplate = state.valueOrNull?.indexWhere(
+      (element) => element.user?.id == userTemplate.user!.id,
+    );
+
+    if (indexOfTemplate == null || indexOfTemplate == -1) return;
+
+    final updatedList = state.valueOrNull!;
+
+    updatedList[indexOfTemplate] = userTemplate;
+
+    state = AsyncData(updatedList);
+
+    await _followRepository.followUser(
+      localUser.uid,
+      userTemplate.user!.id,
+    );
+  }
+
+  void unfollowUser(FollowingUserTemplate userTemplate) async {
+    if (userTemplate.user == null) return;
+    final localUser = await _authRepository.getCurrentUser();
+
+    if (localUser == null) return;
+
+    userTemplate.isFollowing = false;
+
+    final indexOfTemplate = state.valueOrNull?.indexWhere(
+      (element) => element.user?.id == userTemplate.user!.id,
+    );
+
+    if (indexOfTemplate == null || indexOfTemplate == -1) return;
+
+    final updatedList = state.valueOrNull!;
+
+    updatedList[indexOfTemplate] = userTemplate;
+
+    state = AsyncData(updatedList);
+
+    await _followRepository.unfollowUser(
+      localUser.uid,
+      userTemplate.user!.id,
+    );
+  }
 }
 
 class FollowingUserTemplate {
-  final bool isFollowing;
+  bool isFollowing;
   final UserModel? user;
 
   FollowingUserTemplate({

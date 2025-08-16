@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumo/features/diary/screens/user_diaries_list_view/widgets/user_info_chip/user_info_notifier.dart';
 import 'package:rumo/features/user/controllers/search_users_controller.dart';
-import 'package:rumo/features/user/repositories/follow_repository.dart';
 
 class ExploreScreen extends ConsumerWidget {
   const ExploreScreen({super.key});
@@ -14,6 +13,7 @@ class ExploreScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Explorar'),
+        automaticallyImplyLeading: false,
       ),
       body: Builder(
         builder: (context) {
@@ -46,6 +46,12 @@ class ExploreScreen extends ConsumerWidget {
                   isFollowing: follow.isFollowing,
                   targetUserId: follow.user?.id,
                   userId: loggedUserAsync.valueOrNull!.uid,
+                  onFollowed: () {
+                    ref.read(searchUsersControllerProvider.notifier).followUser(follow);
+                  },
+                  onUnfollowed: () {
+                    ref.read(searchUsersControllerProvider.notifier).unfollowUser(follow);
+                  },
                 ),
               );
             },
@@ -60,11 +66,15 @@ class FollowButton extends StatelessWidget {
   final String userId;
   final String? targetUserId;
   final bool isFollowing;
+  final VoidCallback onFollowed;
+  final VoidCallback onUnfollowed;
   const FollowButton({
     super.key,
     required this.userId,
     required this.targetUserId,
     required this.isFollowing,
+    required this.onFollowed,
+    required this.onUnfollowed,
   });
 
   @override
@@ -84,7 +94,7 @@ class FollowButton extends StatelessWidget {
         ),
         onPressed: () {
           if (targetUserId == null) return;
-          FollowRepository().unfollowUser(userId, targetUserId!);
+          onUnfollowed();
         },
         child: Text('Seguindo'),
       );
@@ -103,7 +113,7 @@ class FollowButton extends StatelessWidget {
       ),
       onPressed: () {
         if (targetUserId == null) return;
-        FollowRepository().followUser(userId, targetUserId!);
+        onFollowed();
       },
       child: Text('Seguir'),
     );

@@ -24,20 +24,17 @@ class DiaryGalleryList extends StatelessWidget {
     //     return StaggeredTile.fit(1);
     //   },
     // );
-    return SizedBox(
-      width: double.maxFinite,
-      child: Wrap(
-        alignment: WrapAlignment.start,
-        spacing: 12,
-        runSpacing: 12,
-        children: [
-          DiaryGalleryItem(),
-          DiaryGalleryItem(),
-          DiaryGalleryItem(),
-          DiaryGalleryItem(),
-          DiaryGalleryItem(),
-        ],
-      ),
+    return Wrap(
+      alignment: WrapAlignment.start,
+      spacing: 12,
+      runSpacing: 12,
+      children: [
+        DiaryGalleryItem(),
+        DiaryGalleryItem(),
+        DiaryGalleryItem(),
+        DiaryGalleryItem(),
+        DiaryGalleryItem(),
+      ],
     );
   }
 }
